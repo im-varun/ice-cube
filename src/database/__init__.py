@@ -52,10 +52,10 @@ Security:
 Owner: Database Developer (Varun Mulchandani)
 """
 
-from .connection import get_connection, close_connection
+from .connection import close_connection, get_connection
+from .query_builder import QueryBuilder
 from .query_engine import QueryEngine
 from .query_validator import QueryValidator
-from .query_builder import QueryBuilder
 
 __all__ = [
     "get_connection",

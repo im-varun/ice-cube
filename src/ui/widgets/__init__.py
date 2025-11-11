@@ -33,10 +33,10 @@ Guidelines:
 Owner: UI Developer (Krisha Sanjay Bhalala)
 """
 
-from .query_card import QueryCard
 from .data_table import DataTable
-from .stat_panel import StatPanel
 from .loading_spinner import LoadingSpinner
+from .query_card import QueryCard
+from .stat_panel import StatPanel
 
 __all__ = [
     "QueryCard",

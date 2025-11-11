@@ -37,11 +37,11 @@ Guidelines:
 Owner: UI Developer (Krisha Sanjay Bhalala)
 """
 
+from .analytics_screen import AnalyticsScreen
 from .home_screen import HomeScreen
 from .login_screen import LoginScreen
 from .query_screen import QueryScreen
 from .results_screen import ResultsScreen
-from .analytics_screen import AnalyticsScreen
 
 __all__ = [
     "HomeScreen",

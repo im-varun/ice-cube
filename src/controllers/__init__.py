@@ -44,11 +44,11 @@ Communication:
 Owner: Controller Developer (Krish Sanjay Bhalala)
 """
 
-from .base_controller import BaseController
-from .auth_controller import AuthController
-from .query_controller import QueryController
 from .analytics_controller import AnalyticsController
+from .auth_controller import AuthController
+from .base_controller import BaseController
 from .data_formatter import DataFormatter
+from .query_controller import QueryController
 
 __all__ = [
     "BaseController",

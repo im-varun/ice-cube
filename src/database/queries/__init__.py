@@ -51,22 +51,22 @@ Guidelines:
 Owner: Database Developer (Varun Mulchandani)
 """
 
+from .analytics_queries import (
+    head_to_head_duel,
+    revenge_game_effect,
+)
+from .game_queries import (
+    get_game_by_id,
+    get_longest_games,
+)
 from .player_queries import (
     get_player_by_id,
     get_player_stats,
     get_top_scorers,
 )
 from .team_queries import (
-    get_team_by_id,
     get_highest_scoring_teams,
-)
-from .game_queries import (
-    get_game_by_id,
-    get_longest_games,
-)
-from .analytics_queries import (
-    head_to_head_duel,
-    revenge_game_effect,
+    get_team_by_id,
 )
 
 __all__ = [

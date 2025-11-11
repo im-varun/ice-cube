@@ -37,9 +37,9 @@ Guidelines:
 Owner: Database Developer (Varun Mulchandani)
 """
 
+from .game import Game
 from .player import Player
 from .team import Team
-from .game import Game
 
 __all__ = [
     "Player",

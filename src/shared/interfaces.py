@@ -3,13 +3,14 @@ Central interface definitions for IceCube.
 ALL members should reference these interfaces.
 """
 
-from typing import Protocol, Any, Dict, Optional
 from dataclasses import dataclass
 from enum import Enum
+from typing import Any, Dict, Optional, Protocol
 
 
 class ActionType(Enum):
     """Available UI actions"""
+
     LOGIN = "login"
     LOGOUT = "logout"
     GET_PLAYER_STATS = "get_player_stats"
@@ -20,10 +21,11 @@ class ActionType(Enum):
 @dataclass
 class UIRequest:
     """Request from UI to Controller"""
+
     action: ActionType
     params: Dict[str, Any]
     user_id: Optional[int] = None
-    
+
     def validate(self) -> bool:
         """Validate request has required fields"""
         return self.action is not None
@@ -32,6 +34,7 @@ class UIRequest:
 @dataclass
 class UIResponse:
     """Response from Controller to UI"""
+
     success: bool
     data: Any
     message: str
@@ -41,7 +44,7 @@ class UIResponse:
 
 class ControllerInterface(Protocol):
     """Contract for all controllers"""
-    
+
     def handle_request(self, request: UIRequest) -> UIResponse:
         """Handle a UI request and return formatted response"""
         ...
