@@ -36,13 +36,15 @@ git checkout -b feature/your-feature-name
 ### 2. Code in Your Directory
 
 **Work ONLY in your assigned directory:**
+
 - **UI Developer**: `src/ui/`
-- **Controller Developer**: `src/controllers/`  
+- **Controller Developer**: `src/controllers/`
 - **Database Developer**: `src/database/`
 
 ### 3. Before Committing
 
 The pre-commit hook will automatically check:
+
 - ✅ Python syntax is valid
 - ✅ Basic PEP 8 style (if pycodestyle installed)
 - ⚠️  No print statements (warnings only)
@@ -56,6 +58,10 @@ The pre-commit hook will automatically check:
 ```bash
 # Stage your changes
 git add src/ui/screens/home_screen.py
+
+# run linters
+ruff check . --fix
+ruff format .
 
 # Commit (pre-commit hook runs automatically)
 git commit -m "feat: add home screen layout"
@@ -84,6 +90,7 @@ Use this simple format:
 ```
 
 **Types:**
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation only
@@ -93,6 +100,7 @@ Use this simple format:
 - `chore`: Maintenance
 
 **Examples:**
+
 ```bash
 git commit -m "feat: add player stats widget"
 git commit -m "fix: resolve query timeout issue"
@@ -159,6 +167,7 @@ print("Query executed successfully")
 ### Shared Files (Need Coordination)
 
 Files in `src/shared/` are used by everyone:
+
 1. Create an issue describing the change
 2. Get approval from team
 3. Make the change
