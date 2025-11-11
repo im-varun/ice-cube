@@ -5,17 +5,28 @@ __pycache__/
 *.so
 .Python
 
+# Virtual Environment
+.venv/
+venv/
+ENV/
+
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+*.sublime-*
 
-# Data
-data/raw/*
-!data/raw/.gitkeep
+# Database
 *.db
 *.sqlite3
+*.db-journal
+
+# Data files
+data/raw/*
+!data/raw/.gitkeep
+data/cleaned/*
+!data/cleaned/.gitkeep
 
 # Logs
 *.log
@@ -24,14 +35,21 @@ logs/
 # OS
 .DS_Store
 Thumbs.db
+.DS_Store?
 
 # Testing
 .pytest_cache/
 .coverage
 htmlcov/
+.tox/
+
+# Build
+build/
+dist/
+*.egg-info/
 
 # Temporary
 tmp/
 temp/
 *.tmp
-todelete/
+*~

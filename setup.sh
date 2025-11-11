@@ -12,6 +12,6 @@ pip install pre-commit --user
 pre-commit install
 
 # Create .gitkeep files so that git can track empty directories as well
-touch data/raw/.gitkeep data/cleaned/.gitkeep logs/.gitkeep
+touch data/raw/.gitkeep data/cleaned/.gitkeep
 
 echo "Setup complete! Run 'source ~/.bashrc' to activate PYTHONPATH"

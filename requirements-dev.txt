@@ -1,0 +1,5 @@
+# Simple linting tool (optional but recommended)
+pycodestyle>=2.11.0
+
+# Testing (optional)
+pytest>=7.4.0

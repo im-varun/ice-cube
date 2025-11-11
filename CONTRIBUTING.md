@@ -1,253 +1,244 @@
-## 📋 CONTRIBUTING.md
-
 # Contributing to IceCube
 
-## Getting Started
-
-1. Clone the repository
-
-   ```
-   git clone <repo-url>
-   cd IceCube
-   ```
-2. Set up Python path for lib/ directory
-
-   ```bash
-   export PYTHONPATH="${PYTHONPATH}:$(pwd)/lib"
-   ```
-3. Install pre-commit hooks
-
-   ```bash
-   pip install pre-commit
-   pre-commit install
-   ```
-
-## Branch Strategy
-
-* main - Production-ready code
-* develop - Integration branch
-* feature/`<name>` - Feature branches
-* bugfix/`<name>` - Bug fix branches
-
-## Workflow
-
-1. Create a feature branch
-
-   ```bash
-   git checkout develop
-   git pull origin develop
-   git checkout -b feature/your-feature-name
-   ```
-2. Make changes in your designated directory
-
-   * UI Developer: src/ui/
-   * Controller Developer: src/controllers/
-   * Database Developer: src/database/
-3. Run linters before committing
-
-   ```bash
-   flake8 src/
-   black src/ --check
-   mypy src/
-   ```
-4. Commit your changes
-
-   ```bash
-   git add .
-   git commit -m "feat: add player stats widget"
-   ```
-
-   Pre-commit hooks will run automatically!
-5. Push and create PR
-
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-
-## Commit Message Convention
-
-Use conventional commits:
-
-* feat: - New feature
-* fix: - Bug fix
-* docs: - Documentation changes
-* style: - Code style changes (formatting)
-* refactor: - Code refactoring
-* test: - Adding tests
-* chore: - Maintenance tasks
-
-## Code Standards
-
-### Python Style
-
-* Line length: 100 characters
-* Formatting: Black formatter
-* Imports: isort with black profile
-* Type hints: Use type hints for all function signatures
-* Docstrings: Google-style docstrings
-
-### Example
-
-```python
-from typing import List, Dict, Any
-
-def get_player_stats(player_id: int, season: str) -> Dict[str, Any]:
-    """
-    Retrieve player statistics for a given season.
-
-    Args:
-        player_id: Unique identifier for the player
-        season: Season year (e.g., "2019-2020")
-
-    Returns:
-        Dictionary containing player statistics
-
-    Raises:
-        ValueError: If player_id is invalid
-        DatabaseError: If query fails
-    """
-    pass
-```
-
-## Testing
-
-Write tests for all new features:
+## Quick Setup (First Time Only)
 
 ```bash
-# Run all tests
-python -m pytest tests/
+# 1. Clone and setup structure
+git clone <repo-url>
+cd icecube
+./create_structure.sh
 
-# Run tests for specific module
-python -m pytest tests/test_ui/
+# 2. Set Python path for lib/ directory
+export PYTHONPATH="${PYTHONPATH}:$(pwd)/lib"
+# Add to your shell config to persist:
+echo 'export PYTHONPATH="${PYTHONPATH}:'"$(pwd)/lib"'"' >> ~/.bashrc
 
-# Run with coverage
-python -m pytest --cov=src tests/
+# 3. Setup pre-commit hooks
+./setup_precommit.sh
+
+# 4. (Optional) Install linter
+pip install pycodestyle --user
 ```
 
-## Communication
+## Daily Workflow
 
-* Interfaces changed? Notify all team members immediately
-* Breaking changes? Create an issue first, discuss with team
-* Stuck? Ask in team chat, don't struggle alone
+### 1. Start Working
+
+```bash
+# Always start from develop branch
+git checkout develop
+git pull origin develop
+
+# Create your feature branch
+git checkout -b feature/your-feature-name
+```
+
+### 2. Code in Your Directory
+
+**Work ONLY in your assigned directory:**
+- **UI Developer**: `src/ui/`
+- **Controller Developer**: `src/controllers/`  
+- **Database Developer**: `src/database/`
+
+### 3. Before Committing
+
+The pre-commit hook will automatically check:
+- ✅ Python syntax is valid
+- ✅ Basic PEP 8 style (if pycodestyle installed)
+- ⚠️  No print statements (warnings only)
+- ⚠️  TODOs are tracked (warnings only)
+- ⚠️  Files aren't too large (warnings only)
+
+**Fix any errors** that block your commit.
+
+### 4. Commit Your Changes
+
+```bash
+# Stage your changes
+git add src/ui/screens/home_screen.py
+
+# Commit (pre-commit hook runs automatically)
+git commit -m "feat: add home screen layout"
+
+# If you need to bypass checks (rarely):
+git commit --no-verify -m "wip: saving work"
+```
+
+### 5. Push and Create PR
+
+```bash
+# Push your branch
+git push origin feature/your-feature-name
+
+# Create Pull Request on GitHub/GitLab
+```
+
+## Commit Message Format
+
+Use this simple format:
+
+```
+<type>: <description>
+
+[optional body]
+```
+
+**Types:**
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation only
+- `style`: Code formatting
+- `refactor`: Code restructuring
+- `test`: Adding tests
+- `chore`: Maintenance
+
+**Examples:**
+```bash
+git commit -m "feat: add player stats widget"
+git commit -m "fix: resolve query timeout issue"
+git commit -m "docs: update database schema docs"
+```
+
+## Code Style Guidelines
+
+### Keep It Simple
+
+```python
+# Good: Clear and simple
+def get_player_name(player_id: int) -> str:
+    """Get player name by ID."""
+    return query_db(f"SELECT name FROM players WHERE id = {player_id}")
+
+# Bad: Overly complex
+def get_player_name(player_id: int) -> str:
+    """
+    This function retrieves the name of a player from the database
+    using the player's unique identifier...
+    """
+    # ... 10 lines of unnecessary code
+```
+
+### Use Type Hints
+
+```python
+# Good
+def calculate_score(points: int, multiplier: float) -> float:
+    return points * multiplier
+
+# Bad
+def calculate_score(points, multiplier):
+    return points * multiplier
+```
+
+### Use Logger, Not Print
+
+```python
+# Good
+from shared.logger import get_logger
+logger = get_logger(__name__)
+logger.info("Query executed successfully")
+
+# Bad
+print("Query executed successfully")
+```
+
+### Keep Functions Small
+
+- One function = one responsibility
+- Aim for < 50 lines per function
+- If longer, consider splitting
 
 ## Avoiding Merge Conflicts
 
-1. Pull frequently
-   ```bash
-   git pull origin develop
-   ```
-2. Stay in your directory
-   * UI dev: Only modify src/ui/
-   * Controller dev: Only modify src/controllers/
-   * Database dev: Only modify src/database/
-3. Shared files (src/shared/):
-   * Create an issue before modifying
-   * Get team approval
-   * Notify everyone after changes
-4. Rebase before PR
-   ```bash
-   git fetch origin
-   git rebase origin/develop
-   ```
+### Golden Rules
 
-## Code Review Checklist
+1. **Stay in your directory** - Don't modify other team members' files
+2. **Pull frequently** - `git pull origin develop` at least daily
+3. **Shared files** - Create an issue first, discuss with team
 
-* [ ] Code follows style guidelines (passes flake8/black)
-* [ ] All functions have type hints
-* [ ] Docstrings added for public functions
-* [ ] Tests added/updated
-* [ ] No hardcoded values (use config.py)
-* [ ] Error handling implemented
-* [ ] Logging added for important operations
-* [ ] No print statements (use logger)
-* [ ] Interfaces respected (no direct imports across layers)
+### Shared Files (Need Coordination)
 
-## Questions?
+Files in `src/shared/` are used by everyone:
+1. Create an issue describing the change
+2. Get approval from team
+3. Make the change
+4. Notify everyone in team chat
 
-Check the wiki or ask in the telegram channel
+## Testing Your Code
 
+```bash
+# Run tests for your module
+pytest tests/test_ui/          # UI tests
+pytest tests/test_controllers/ # Controller tests
+pytest tests/test_database/    # Database tests
 
-## 🚀 Setup Script
+# Run all tests
+pytest tests/
 
-**File:** `setup.sh`
-
+# Run with output
+pytest tests/ -v
 ```
-#!/bin/bash
 
-echo "🏒 Setting up IceCube development environment..."
+## Getting Help
 
-# Set PYTHONPATH
+- **Syntax errors?** Read the error message carefully
+- **Style warnings?** They won't block commits, fix when convenient
+- **Merge conflicts?** Ask in team chat immediately
+- **Not sure about something?** Better to ask than guess!
+
+## Troubleshooting
+
+### Pre-commit hook not running?
+
+```bash
+# Re-run setup
+./setup_precommit.sh
+
+# Check if hook is executable
+ls -la .git/hooks/pre-commit
+```
+
+### Pycodestyle not found?
+
+```bash
+# Install it (optional)
+pip install pycodestyle --user
+
+# Or just ignore style warnings
+git commit  # Will still work without pycodestyle
+```
+
+### PYTHONPATH not set?
+
+```bash
+# Temporary (current session)
 export PYTHONPATH="${PYTHONPATH}:$(pwd)/lib"
-echo "export PYTHONPATH=\"\${PYTHONPATH}:$(pwd)/lib\"" >> ~/.bashrc
 
-# Install pre-commit
-echo "Installing pre-commit hooks..."
-pip install pre-commit --user
-pre-commit install
-
-# Create necessary directories
-mkdir -p data/raw data/cleaned logs tests
-
-# Create .gitkeep files
-touch data/raw/.gitkeep data/cleaned/.gitkeep logs/.gitkeep
-
-echo "Setup complete! Run 'source ~/.bashrc' to activate PYTHONPATH"
+# Permanent (add to shell config)
+echo 'export PYTHONPATH="${PYTHONPATH}:'"$(pwd)/lib"'"' >> ~/.bashrc
+source ~/.bashrc
 ```
 
----
+## Summary: Your Daily Commands
 
-## 📦 Example Implementation
+```bash
+# Morning: Get latest code
+git checkout develop && git pull
 
-### Shared Interfaces
+# Start work: Create branch
+git checkout -b feature/my-feature
 
-File: src/shared/interfaces.py
+# While working: Check status
+git status
 
-```python
-"""
-Central interface definitions for IceCube.
-ALL members should reference these interfaces.
-"""
+# Ready to commit: Stage and commit
+git add <files>
+git commit -m "feat: description"
 
-from typing import Protocol, Any, Dict, List, Optional
-from dataclasses import dataclass
-from enum import Enum
+# Push your work
+git push origin feature/my-feature
 
-
-class ActionType(Enum):
-    """Available UI actions"""
-    LOGIN = "login"
-    LOGOUT = "logout"
-    GET_PLAYER_STATS = "get_player_stats"
-    RUN_ANALYTICS = "run_analytics"
-    CUSTOM_QUERY = "custom_query"
-
-
-@dataclass
-class UIRequest:
-    """Request from UI to Controller"""
-    action: ActionType
-    params: Dict[str, Any]
-    user_id: Optional[int] = None
-  
-    def validate(self) -> bool:
-        """Validate request has required fields"""
-        return self.action is not None
-
-
-@dataclass
-class UIResponse:
-    """Response from Controller to UI"""
-    success: bool
-    data: Any
-    message: str
-    error_code: Optional[str] = None
-    metadata: Optional[Dict[str, Any]] = None
-
-
-class ControllerInterface(Protocol):
-    """Contract for all controllers"""
-  
-    def handle_request(self, request: UIRequest) -> UIResponse:
-        """Handle a UI request and return formatted response"""
-        ...
+# Evening: Create PR and celebrate! 🎉
 ```
+
+That's it! Keep it simple, stay in your lane, and commit often. 🏒
