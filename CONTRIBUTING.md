@@ -240,14 +240,21 @@ git checkout -b feature/my-feature
 # While working: Check status
 git status
 
-# Ready to commit: Stage and commit
+# Stage changes
 git add <files>
+
+
+# Run linters
+ruff check <files> --fix
+ruff format <files>
+
+# Commit changes
 git commit -m "feat: description"
 
 # Push your work
 git push origin feature/my-feature
 
-# Evening: Create PR and celebrate! 🎉
+# Evening: Create PR and celebrate!
 ```
 
 That's it! Keep it simple, stay in your lane, and commit often. 🏒

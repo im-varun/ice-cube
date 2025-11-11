@@ -60,12 +60,117 @@ python server.py
 
 ```
 icecube/
-├── server/
-│   ├── router.py              # Route decorators and handlers
-│   ├── database_interface.py  # Database query layer
-├── handlers.py                # API endpoint implementations
-├── constants.py               # Type definitions and constants
-└── README.md
+├── .github/                              # github ci/cd workflows with ruff
+│   └── workflows/
+│   	└── ci.yml
+│
+├── lib/                              # Packaged dependencies (no venv)
+│   ├── textual/
+│   ├── rich/
+│   └── ...
+│
+├── src/                              # Main application code
+│   │
+│   ├── ui/                           # UI Layer (Member 1)
+│   │   ├── __init__.py
+│   │   ├── screens/                 # Textual screens
+│   │   │   ├── __init__.py
+│   │   │   ├── home_screen.py
+│   │   │   ├── login_screen.py
+│   │   │   ├── query_screen.py
+│   │   │   ├── results_screen.py
+│   │   │   └── analytics_screen.py
+│   │   │
+│   │   ├── widgets/                 # Reusable UI components
+│   │   │   ├── __init__.py
+│   │   │   ├── query_card.py
+│   │   │   ├── data_table.py
+│   │   │   ├── stat_panel.py
+│   │   │   └── loading_spinner.py
+│   │   │
+│   │   ├── styles/                  # CSS styling for Textual
+│   │   │   ├── __init__.py
+│   │   │   ├── theme.tcss
+│   │   │   └── components.tcss
+│   │   │
+│   │   └── app.py                   # Main Textual App class
+│   │
+│   ├── controllers/                 # Business Logic Layer (Member 2)
+│   │   ├── __init__.py
+│   │   ├── base_controller.py      # Abstract base controller
+│   │   ├── auth_controller.py      # Login/logout logic
+│   │   ├── query_controller.py     # Query orchestration
+│   │   ├── analytics_controller.py # Analytics queries logic
+│   │   └── data_formatter.py       # Format data for UI consumption
+│   │
+│   ├── database/                    # Database Layer (Member 3)
+│   │   ├── __init__.py
+│   │   ├── connection.py           # DB connection management
+│   │   ├── query_engine.py         # Main query execution engine
+│   │   ├── query_validator.py      # SQL injection prevention
+│   │   ├── query_builder.py        # Safe query construction
+│   │   │
+│   │   ├── queries/                # Predefined queries
+│   │   │   ├── __init__.py
+│   │   │   ├── player_queries.py
+│   │   │   ├── team_queries.py
+│   │   │   ├── game_queries.py
+│   │   │   └── analytics_queries.py
+│   │   │
+│   │   └── models/                 # Data models/schemas
+│   │       ├── __init__.py
+│   │       ├── player.py
+│   │       ├── team.py
+│   │       └── game.py
+│   │
+│   ├── shared/                      # Shared utilities
+│   │   ├── __init__.py
+│   │   ├── config.py               # Configuration management
+│   │   ├── constants.py            # Shared constants
+│   │   ├── exceptions.py           # Custom exceptions
+│   │   ├── logger.py               # Logging setup
+│   │   └── types.py                # Type definitions
+│   │
+│   └── main.py                      # Application entry point
+│
+├── scripts/                         # Utility scripts
+│   ├── populate_database.py
+│   ├── empty_database.py
+│   ├── data_cleaning.py
+│   └── view_metadata.py
+│
+├── data/                            # Data files
+│   ├── raw/                        # Raw NHL data
+│   ├── cleaned/                    # Cleaned data
+│   ├── metadata.txt                # Data documentation
+│   └── schema.sql                  # Database schema
+│
+├── reports/                         # Project documentation
+│   ├── er_diagram.png
+│   ├── erd_relations.pdf
+│   ├── normalization_steps.pdf
+│   └── queries_description.pdf
+│
+├── tests/                           # Unit tests (mirror src structure)
+│   ├── __init__.py
+│   ├── test_ui/
+│   ├── test_controllers/
+│   ├── test_database/
+│   └── test_shared/
+|
+├── logistics_scripts/               # basic scripts for creating empty project
+│   ├── __init__.py
+│   ├── test_ui/
+│   ├── test_controllers/
+│
+├── .git/                            # Git repository
+├── .gitignore
+├── .pre-commit-config.yaml         # Pre-commit hooks
+├── pyproject.toml                  # Project metadata
+├── requirements.txt                # Dependencies list
+├── README.md
+├── template.py			    # Simple textual app to test dependencies
+└── CONTRIBUTING.md                 # Collaboration guidelines
 ```
 
 ---
