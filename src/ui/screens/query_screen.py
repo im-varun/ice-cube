@@ -6,7 +6,17 @@ from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Container, Vertical
 from textual.screen import Screen
-from textual.widgets import Button, Footer, Header, Static, TextArea, Select, SelectionList, Input, Collapsible
+from textual.widgets import (
+    Button,
+    Collapsible,
+    Footer,
+    Header,
+    Input,
+    Select,
+    SelectionList,
+    Static,
+    TextArea,
+)
 
 
 class QueryScreen(Screen):
@@ -49,22 +59,30 @@ class QueryScreen(Screen):
 
                 # Table Selection
                 yield Static("Select Table:", classes="label")
-                yield Select(self.TABLES, prompt="Choose a table...", id="table-select", classes="full-width")
+                yield Select(
+                    self.TABLES, prompt="Choose a table...", id="table-select", classes="full-width"
+                )
 
                 # Column Selection
                 with Collapsible(title="Select Columns", classes="full-width"):
                     yield SelectionList[str](
                         *[(name, val, False) for name, val in self.COLUMNS],
                         id="column-select",
-                        classes="scrollable-list"
+                        classes="scrollable-list",
                     )
 
                 # Constraint Input
                 yield Static("Where Condition (Optional):", classes="label")
-                yield Input(placeholder="e.g., team_id = 1", id="constraint-input", classes="bordered-input full-width")
+                yield Input(
+                    placeholder="e.g., team_id = 1",
+                    id="constraint-input",
+                    classes="bordered-input full-width",
+                )
 
                 # Execute button
-                yield Button("Execute Query", variant="success", id="execute-btn", classes="bordered-btn")
+                yield Button(
+                    "Execute Query", variant="success", id="execute-btn", classes="bordered-btn"
+                )
 
             # Results section
             with Vertical(classes="results-section"):
@@ -74,7 +92,7 @@ class QueryScreen(Screen):
                     "Query results will be displayed here.", id="results-output", read_only=True
                 )
                 # Use relative height or flex to avoid overflow
-                results_area.styles.height = "1fr" 
+                results_area.styles.height = "1fr"
                 results_area.styles.border = ("solid", "green")
                 yield results_area
 
@@ -108,10 +126,10 @@ class QueryScreen(Screen):
         # Construct Query
         cols_str = ", ".join(selected_columns)
         query = f"SELECT {cols_str} FROM {selected_table}"
-        
+
         if constraint and constraint.strip():
             query += f" WHERE {constraint}"
-        
+
         query += ";"
 
         # TODO: Replace with actual database query execution
