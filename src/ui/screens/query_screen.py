@@ -6,7 +6,7 @@ from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Container, Vertical
 from textual.screen import Screen
-from textual.widgets import Button, Footer, Header, Static, TextArea
+from textual.widgets import Button, Footer, Header, Static, TextArea, Select, SelectionList, Input, Collapsible
 
 
 class QueryScreen(Screen):
@@ -18,6 +18,23 @@ class QueryScreen(Screen):
         Binding("escape", "back", "Back", show=True),
     ]
 
+    # Mock Data
+    TABLES = [
+        ("Players", "players"),
+        ("Teams", "teams"),
+        ("Games", "games"),
+        ("Stats", "stats"),
+    ]
+
+    COLUMNS = [
+        ("ID", "id"),
+        ("Name", "name"),
+        ("Team ID", "team_id"),
+        ("Score", "score"),
+        ("Date", "date"),
+        ("Position", "position"),
+    ]
+
     def compose(self) -> ComposeResult:
         """Compose the query screen layout"""
         yield Header()
@@ -27,30 +44,38 @@ class QueryScreen(Screen):
             yield Static("SQL Query Runner", classes="content-title")
 
             # Query input section
-            with Vertical():
-                yield Static("Enter SQL Query", classes="highlight-magenta")
+            with Vertical(classes="input-section"):
+                yield Static("Build your Query", classes="highlight-magenta")
 
-                query_area = TextArea(
-                    "e.g., SELECT * FROM players WHERE team = 'TBL';",
-                    id="query-input",
-                    language="sql",
-                )
-                query_area.styles.height = 20
-                query_area.styles.margin = (1, 0)
-                yield query_area
+                # Table Selection
+                yield Static("Select Table:", classes="label")
+                yield Select(self.TABLES, prompt="Choose a table...", id="table-select", classes="full-width")
+
+                # Column Selection
+                with Collapsible(title="Select Columns", classes="full-width"):
+                    yield SelectionList[str](
+                        *[(name, val, False) for name, val in self.COLUMNS],
+                        id="column-select",
+                        classes="scrollable-list"
+                    )
+
+                # Constraint Input
+                yield Static("Where Condition (Optional):", classes="label")
+                yield Input(placeholder="e.g., team_id = 1", id="constraint-input", classes="bordered-input full-width")
 
                 # Execute button
-                yield Button("Execute Query", variant="success", id="execute-btn")
+                yield Button("Execute Query", variant="success", id="execute-btn", classes="bordered-btn")
 
             # Results section
-            with Vertical():
+            with Vertical(classes="results-section"):
                 yield Static("Results", classes="content-title")
 
                 results_area = TextArea(
                     "Query results will be displayed here.", id="results-output", read_only=True
                 )
-                results_area.styles.height = 30
-                results_area.styles.margin = (1, 0)
+                # Use relative height or flex to avoid overflow
+                results_area.styles.height = "1fr" 
+                results_area.styles.border = ("solid", "green")
                 yield results_area
 
         # Footer with shortcuts
@@ -63,14 +88,31 @@ class QueryScreen(Screen):
 
     def action_execute_query(self) -> None:
         """Execute the SQL query"""
-        query_input = self.query_one("#query-input", TextArea)
+        table_select = self.query_one("#table-select", Select)
+        column_select = self.query_one("#column-select", SelectionList)
+        constraint_input = self.query_one("#constraint-input", Input)
         results_output = self.query_one("#results-output", TextArea)
 
-        query = query_input.text
+        selected_table = table_select.value
+        selected_columns = column_select.selected
+        constraint = constraint_input.value
 
-        if not query or query.strip() == "":
-            results_output.text = "Error: Please enter a query."
+        if not selected_table:
+            results_output.text = "Error: Please select a table."
             return
+
+        if not selected_columns:
+            results_output.text = "Error: Please select at least one column."
+            return
+
+        # Construct Query
+        cols_str = ", ".join(selected_columns)
+        query = f"SELECT {cols_str} FROM {selected_table}"
+        
+        if constraint and constraint.strip():
+            query += f" WHERE {constraint}"
+        
+        query += ";"
 
         # TODO: Replace with actual database query execution
         # This is a placeholder - integrate with your database controller
@@ -87,10 +129,14 @@ class QueryScreen(Screen):
 
     def action_clear_query(self) -> None:
         """Clear the query input"""
-        query_input = self.query_one("#query-input", TextArea)
+        table_select = self.query_one("#table-select", Select)
+        column_select = self.query_one("#column-select", SelectionList)
+        constraint_input = self.query_one("#constraint-input", Input)
         results_output = self.query_one("#results-output", TextArea)
 
-        query_input.text = ""
+        table_select.value = Select.BLANK
+        column_select.deselect_all()
+        constraint_input.value = ""
         results_output.text = "Query results will be displayed here."
 
     def action_back(self) -> None:
