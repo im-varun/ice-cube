@@ -1,0 +1,13 @@
+DROP TABLE IF EXISTS game;
+DROP TABLE IF EXISTS game_goalie_stats;
+DROP TABLE IF EXISTS game_goals;
+DROP TABLE IF EXISTS game_officials;
+DROP TABLE IF EXISTS game_penalties;
+DROP TABLE IF EXISTS game_plays;
+DROP TABLE IF EXISTS game_plays_players;
+DROP TABLE IF EXISTS game_scratches;
+DROP TABLE IF EXISTS game_shifts;
+DROP TABLE IF EXISTS game_skater_stats;
+DROP TABLE IF EXISTS game_teams_stats;
+DROP TABLE IF EXISTS player_info;
+DROP TABLE IF EXISTS team_info;
