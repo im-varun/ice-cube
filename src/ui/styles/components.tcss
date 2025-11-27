@@ -1,0 +1,555 @@
+/* Additional Component Styles for IceCube */
+
+/* Loading Container Styles */
+.loading-container {
+    align: center middle;
+    background: #0a1929;
+    padding: 4;
+    border: solid #1e3a5f;
+    margin: 2;
+}
+
+#loading-message {
+    text-align: center;
+    color: #00d4ff;
+    margin: 1;
+}
+
+#progress-text {
+    text-align: center;
+    color: #ffa500;
+    margin: 1;
+}
+
+/* Hockey Animation Styles */
+#hockey-animation {
+    text-align: center;
+    color: #00d4ff;
+    text-style: bold;
+}
+
+#hockey-message {
+    text-align: center;
+    color: #e0e7ff;
+    margin-top: 1;
+}
+
+/* Enhanced Data Table Styles */
+EnhancedDataTable {
+    background: #0d1f3a;
+    border: solid #1e3a5f;
+    height: auto;
+}
+
+EnhancedDataTable:focus {
+    border: solid #00d4ff;
+}
+
+/* Highlighted table rows */
+EnhancedDataTable .highlight-row {
+    background: #1a3350;
+}
+
+/* Stat Panel Variations */
+.highlight-panel {
+    border: solid #ffa500;
+    background: #1a2a1a;
+}
+
+.stats-panel.success {
+    border: solid #00ff00;
+}
+
+.stats-panel.warning {
+    border: solid #ffff00;
+}
+
+.stats-panel.danger {
+    border: solid #ff0000;
+}
+
+.stats-panel.info {
+    border: solid #00d4ff;
+}
+
+/* Metric Card Styles */
+MetricCard {
+    width: auto;
+    height: auto;
+    min-width: 20;
+    padding: 2;
+}
+
+/* Comparison Panel Styles */
+ComparisonPanel {
+    padding: 2;
+    margin: 1;
+}
+
+.vs-text {
+    color: #ff00ff;
+    text-style: bold;
+    text-align: center;
+}
+
+/* Progress Bar Styles */
+ProgressBar {
+    width: 100%;
+    padding: 1;
+}
+
+.progress-fill {
+    background: #00d4ff;
+    color: #00d4ff;
+}
+
+.progress-empty {
+    background: #1e3a5f;
+    color: #1e3a5f;
+}
+
+/* Ranking Panel Styles */
+RankingPanel {
+    padding: 2;
+    margin: 1;
+}
+
+.rank-item {
+    padding: 0 1;
+    margin: 0 0 1 0;
+}
+
+.rank-1 {
+    color: #ffa500;
+    text-style: bold;
+}
+
+.rank-2 {
+    color: #c0c0c0;
+    text-style: bold;
+}
+
+.rank-3 {
+    color: #cd7f32;
+    text-style: bold;
+}
+
+/* Trend Indicator Styles */
+TrendIndicator {
+    padding: 1;
+    margin: 1;
+}
+
+.trend-up {
+    color: #00ff00;
+}
+
+.trend-down {
+    color: #ff6b6b;
+}
+
+.trend-stable {
+    color: #00d4ff;
+}
+
+/* Query Execution Spinner */
+QueryExecutionSpinner {
+    padding: 3;
+    margin: 2;
+}
+
+#stage-text {
+    text-align: center;
+    margin: 1;
+}
+
+#time-estimate {
+    text-align: center;
+    margin-top: 1;
+}
+
+/* Data Loading Indicator */
+DataLoadingIndicator {
+    padding: 2;
+}
+
+#operation-text {
+    text-align: center;
+    margin: 1;
+}
+
+#progress-count {
+    text-align: center;
+    color: #00d4ff;
+}
+
+/* Minimal Spinner */
+MinimalSpinner {
+    color: #00d4ff;
+    text-style: italic;
+}
+
+/* Progress Spinner */
+ProgressSpinner {
+    padding: 2;
+}
+
+#percentage {
+    text-align: center;
+    margin: 1;
+}
+
+#progress-bar {
+    text-align: center;
+    margin: 1;
+    width: 100%;
+}
+
+#step-counter {
+    text-align: center;
+    margin-top: 1;
+}
+
+/* Login Screen Specific Styles */
+.login-container {
+    align: center middle;
+    width: 60;
+    padding: 2;
+}
+
+.connection-form {
+    background: #0d1f3a;
+    border: solid #1e3a5f;
+    padding: 3;
+    margin: 2;
+}
+
+#status-message {
+    text-align: center;
+    margin-top: 2;
+    color: #00d4ff;
+}
+
+.status-error {
+    color: #ff6b6b;
+}
+
+.status-success {
+    color: #00ff00;
+}
+
+/* Analytics Screen Specific Styles */
+.analytics-sidebar {
+    background: #0d1f3a;
+    border-right: solid #1e3a5f;
+}
+
+.analytics-module {
+    background: #0d1f3a;
+    border: solid #1e3a5f;
+    padding: 1;
+    margin: 1;
+}
+
+.analytics-module:hover {
+    border: solid #00d4ff;
+    background: #152943;
+}
+
+.analytics-content {
+    padding: 2;
+}
+
+/* Chart Container */
+.chart-area {
+    background: #0d1f3a;
+    border: solid #1e3a5f;
+    padding: 2;
+    margin: 1;
+    min-height: 15;
+}
+
+/* Insight Box */
+.insight-box {
+    background: #1a2a1a;
+    border: solid #2a4a2a;
+    padding: 2;
+    margin: 1;
+}
+
+.insight-title {
+    color: #00ff00;
+    text-style: bold;
+}
+
+/* Correlation Box */
+.correlation-box {
+    background: #1a1a2a;
+    border: solid #2a2a4a;
+    padding: 2;
+    margin: 1;
+}
+
+.correlation-positive {
+    color: #00ff00;
+}
+
+.correlation-negative {
+    color: #ff6b6b;
+}
+
+.correlation-neutral {
+    color: #ffff00;
+}
+
+/* Key Metrics Grid */
+.metrics-grid {
+    layout: grid;
+    grid-size: 2 2;
+    grid-gutter: 1;
+}
+
+/* Alert Styles */
+.alert {
+    border: solid #ffff00;
+    background: #2a2a1a;
+    padding: 1;
+    margin: 1;
+}
+
+.alert-info {
+    border: solid #00d4ff;
+    background: #1a2a3a;
+}
+
+.alert-success {
+    border: solid #00ff00;
+    background: #1a2a1a;
+}
+
+.alert-warning {
+    border: solid #ffff00;
+    background: #2a2a1a;
+}
+
+.alert-danger {
+    border: solid #ff0000;
+    background: #2a1a1a;
+}
+
+/* Badge Styles */
+.badge {
+    background: #1e3a5f;
+    color: #00d4ff;
+    padding: 0 1;
+
+}
+
+.badge-primary {
+    background: #00d4ff;
+    color: #0a1929;
+}
+
+.badge-success {
+    background: #00ff00;
+    color: #0a1929;
+}
+
+.badge-warning {
+    background: #ffa500;
+    color: #0a1929;
+}
+
+.badge-danger {
+    background: #ff0000;
+    color: #ffffff;
+}
+
+/* Card Group */
+.card-group {
+    layout: grid;
+    grid-size: 3;
+    grid-gutter: 1;
+    margin: 1;
+}
+
+/* Tooltip Style */
+.tooltip {
+    background: #1e3a5f;
+    border: solid #00d4ff;
+    padding: 1;
+    color: #e0e7ff;
+}
+
+/* Divider */
+.divider {
+    height: 1;
+    background: #1e3a5f;
+    margin: 1 0;
+}
+
+/* Section Header */
+.section-header {
+    color: #00d4ff;
+    text-style: bold;
+    border-bottom: solid #1e3a5f;
+    padding-bottom: 1;
+    margin: 2 0 1 0;
+}
+
+/* Legend */
+.legend {
+    background: #0d1f3a;
+    border: solid #1e3a5f;
+    padding: 1;
+    margin: 1;
+}
+
+.legend-item {
+    margin: 0 1;
+}
+
+.legend-color {
+    width: 3;
+    height: 1;
+    background: #00d4ff;
+}
+
+/* Animated Elements - Note: Textual doesn't support @keyframes */
+/* Use Textual's built-in animations or handle in Python code */
+.pulse {
+    text-style: bold;
+}
+
+.fade-in {
+    text-style: italic;
+}
+
+/* Scrollbar Customization */
+.custom-scroll {
+    scrollbar-background: #0a1929;
+    scrollbar-color: #00d4ff;
+    scrollbar-color-hover: #00ffff;
+    scrollbar-color-active: #0099cc;
+}
+
+/* Input Focus States */
+Input.-invalid {
+    border: solid #ff0000;
+}
+
+Input.-valid {
+    border: solid #00ff00;
+}
+
+/* Button Variations */
+Button.-danger {
+    background: #2a1a1a;
+    border: solid #ff0000;
+    color: #ff0000;
+}
+
+Button.-danger:hover {
+    background: #3a1a1a;
+    border: solid #ff6b6b;
+    color: #ff6b6b;
+}
+
+Button.-warning {
+    background: #2a2a1a;
+    border: solid #ffff00;
+    color: #ffff00;
+}
+
+Button.-warning:hover {
+    background: #3a3a1a;
+    border: solid #ffff88;
+    color: #ffff88;
+}
+
+Button.-info {
+    background: #1a2a3a;
+    border: solid #00d4ff;
+    color: #00d4ff;
+}
+
+Button.-info:hover {
+    background: #1a3a4a;
+    border: solid #00ffff;
+    color: #00ffff;
+}
+
+/* Center alignment helpers */
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+/* Query Screen Specific Styles */
+.bordered-input {
+    border: solid white;
+    height: auto;
+    margin: 1 0;
+}
+
+.bordered-btn {
+    border: solid white;
+    margin: 1 0;
+    width: 100%;
+}
+
+.input-section {
+    height: auto;
+    margin-bottom: 1;
+    overflow-y: auto;
+}
+
+.results-section {
+    height: 1fr;
+    border-top: solid #1e3a5f;
+}
+
+.scrollable-list {
+    height: 10; /* Approx 4-5 items */
+    overflow-y: auto;
+    border: solid #1e3a5f;
+    margin: 1 0;
+}
+
+.full-width {
+    width: 100%;
+}
+
+/* Style Collapsible to look like Select */
+Collapsible {
+    border: solid #1e3a5f;
+    background: #0d1f3a;
+    margin: 1 0;
+    padding: 0;
+}
+
+CollapsibleTitle {
+    padding: 1 2;
+}
+
+/* Fix overflow */
+.input-section {
+    height: auto;
+    max-height: 60%; /* Limit height to prevent pushing results off */
+    margin-bottom: 2;
+    padding-bottom: 4; /* Increased padding to ensure button visibility */
+    overflow-y: auto;
+}
+
+.bordered-btn {
+    border: solid white;
+    margin: 2 0 4 0; /* Increased bottom margin */
+    width: 100%;
+}
