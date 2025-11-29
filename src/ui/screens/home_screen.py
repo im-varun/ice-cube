@@ -1,7 +1,5 @@
 """
-Home Screen – Stunning, Professional NHL Analytics Dashboard
-Polished design with working navigation
-100% Textual-compatible CSS
+Home Screen: NHL Dashboard
 """
 
 import os
@@ -21,6 +19,7 @@ from textual.screen import Screen
 from textual.widgets import Static, Footer, Header, Button
 from textual.binding import Binding
 
+from ui.interfaces import ControllerInterface
 
 class HomeScreen(Screen):
     """Professional IceCube Home Screen with Working Navigation"""
@@ -220,9 +219,9 @@ class HomeScreen(Screen):
     """
 
     BINDINGS = [
-        Binding("s", "Search", "Table Lookup", show=True, priority=True),
+        Binding("f", "table_lookup", "Table Lookup", show=True, priority=True),
         Binding("p", "predefined_queries", "Signature Queries", show=True, priority=True),
-        Binding("ctrl+q", "quit", "Quit", show=True),
+        Binding("ctrl+q", "quit", "Quit", show=True)
     ]
 
     def __init__(self):
@@ -308,14 +307,14 @@ class HomeScreen(Screen):
             from ui.screens.analytics_screen import AnalyticsScreen
 
             self.notify("📊 Loading Signature Queries...", severity="information")
-            self.app.push_screen(AnalyticsScreen("top_scoring"))
+            self.app.push_screen(AnalyticsScreen())
         except Exception as e:
             self.notify(f"Error loading Results Screen: {e}", severity="error")
 
     def action_disconnect(self) -> None:
         """Disconnect from database"""
         request = UIRequest(action="disconnect_db", params={})
-        response = self.controller.handle_request(request)
+        response = self.app.controller.handle_request(request)
         if response.success:
             self.notify("❄️ Database disconnected successfully", severity="information")
             self.app.set_db_status(False)

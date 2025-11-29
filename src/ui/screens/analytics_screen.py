@@ -1,6 +1,6 @@
 """
-Analytics Screen - 12 pre-defined queries in ONE full-height column
-No scrolling in sidebar, only results scroll
+Analytics Screen - Pre-defined queries with controller integration
+Displays real results from database via QueryController
 """
 
 from textual.app import ComposeResult
@@ -8,17 +8,20 @@ from textual.containers import Horizontal, Vertical, ScrollableContainer
 from textual.screen import Screen
 from textual.widgets import DataTable, Footer, Header, Static
 from ..widgets.query_card import QueryCard
+from ui.interfaces import ControllerInterface, UIRequest
 
+
+from query_registry import QUERIES
 
 class AnalyticsScreen(Screen):
-    """Results screen with 12 queries in a single, full-height column"""
+    """Results screen with pre-defined queries using QueryController"""
 
     BINDINGS = [
-        ("escape", "back", "Back"),
-        ("q", "quit", "Quit"),
+        ("escape", "dismiss", "Return"),
+        ("ctrl+q", "quit", "Quit")
     ]
 
-    def __init__(self, query_id: str):
+    def __init__(self, query_id: str = "most_penalized"):
         super().__init__()
         self.query_id = query_id
 
@@ -32,55 +35,72 @@ class AnalyticsScreen(Screen):
             with Vertical(classes="sidebar"):
                 yield Static("PRE-DEFINED QUERIES", classes="sidebar-title")
 
-                # 12 queries – one per line, full width
-                queries = [
-                    ("Top Scoring Players", "top_scoring"),
-                    ("Most Penalized Teams", "penalized_teams"),
-                    ("Goalie Save % Leaders", "goalie_leaders"),
-                    ("Game Scoring Trends", "scoring_trends"),
-                    ("Longest Games", "longest_games"),
-                    ("Players with Most Assists", "most_assists"),
-                    ("Head to Head Duel", "head_to_head"),
-                    ("Messi or Ronaldo?", "messi_ronaldo"),
-                    ("Player Point Dist.", "point_dist"),
-                    ("Probability Queries", "probability"),
-                    ("Team Power Play", "power_play"),
-                    ("Most Common Play Types", "play_types"),
-                ]
-
-                # ONE QueryCard per row – no Grid, no scroll
-                for title, qid in queries:
+                # ONE QueryCard per row
+                for title, qid in QUERIES:
                     yield QueryCard(title, qid)
 
             # ── RIGHT CONTENT: Title + scrollable table only ───────────
             with Vertical(classes="content-area"):
                 # Dynamic title
-                title_map = {qid: title for title, qid in queries}
+                title_map = {qid: title for title, qid in QUERIES}
                 yield Static(title_map.get(self.query_id, "Query Results"), classes="content-title")
 
                 # Scrollable results container
                 with ScrollableContainer():
-                    table = DataTable()
-                    table.add_columns("#", "PLAYER", "TEAM", "POINTS")
-                    table.add_rows(
-                        [
-                            ("1", "Leon Draisaitl", "EDM", "110 PTS"),
-                            ("2", "Connor McDavid", "EDM", "97 PTS"),
-                            ("3", "David Pastrnak", "BOS", "95 PTS"),
-                            ("4", "Artemi Panarin", "NYR", "95 PTS"),
-                            ("5", "Nathan MacKinnon", "COL", "93 PTS"),
-                            ("6", "Brad Marchand", "BOS", "87 PTS"),
-                            ("7", "Jack Eichel", "BUF", "82 PTS"),
-                            ("8", "Kevin Fiala", "MIN", "81 PTS"),
-                            ("9", "Patrick Kane", "CHI", "80 PTS"),
-                            ("10", "Evgeni Malkin", "PIT", "79 PTS"),
-                            ("11", "Auston Matthews", "TOR", "78 PTS"),
-                            ("12", "Nikita Kucherov", "TBL", "77 PTS"),
-                        ]
-                    )
-                    yield table
+                    yield DataTable(id="results-table")
 
         yield Footer()
+
+    def on_mount(self) -> None:
+        """Load query results when screen is mounted"""
+        self.load_query_results()
+
+    def load_query_results(self) -> None:
+        """Execute the current query and display results"""
+        if not hasattr(self.app, "controller") or not self.app.controller:
+            self.show_error("No controller available")
+            return
+
+        table = self.query_one("#results-table", DataTable)
+        table.clear(columns=True)
+
+        try:
+            # Create request based on query_id
+            request = UIRequest(action=self.query_id, payload={})
+            
+            # Execute query via controller
+            response = self.app.controller.handle_request(request)
+
+            if response.success and response.data:
+                # Add columns from first row
+                if len(response.data) > 0:
+                    headers = list(response.data[0].keys())
+                    for header in headers:
+                        table.add_column(str(header), key=str(header))
+
+                    # Add rows
+                    for row in response.data:
+                        values = [str(row.get(h, "")) for h in headers]
+                        table.add_row(*values)
+                else:
+                    table.add_column("Message")
+                    table.add_row("0 results")
+            else:
+                # Show error in table
+                table.add_column("Error")
+                table.add_row(response.message)
+
+        except Exception as e:
+            # Show exception in table
+            table.add_column("Error")
+            table.add_row(f"Exception: {str(e)}")
+
+    def show_error(self, message: str) -> None:
+        """Display error message in table"""
+        table = self.query_one("#results-table", DataTable)
+        table.clear(columns=True)
+        table.add_column("Error")
+        table.add_row(message)
 
     # ────────────────────────────────────────────────────────────────
     # Navigation
@@ -89,6 +109,6 @@ class AnalyticsScreen(Screen):
         """Switch to new result when a sidebar query is clicked"""
         self.app.push_screen(AnalyticsScreen(event.query_id))
 
-    def action_back(self) -> None:
-        """Return to Home Screen"""
-        self.app.pop_screen()
+    def action_dismiss(self) -> None:
+        self.dismiss()
+

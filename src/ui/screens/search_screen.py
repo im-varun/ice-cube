@@ -1,5 +1,6 @@
 """
 Search Screen: used for table lookups from all the tables 
+Uses QueryController to execute custom SQL queries
 """
 
 from textual.app import ComposeResult
@@ -15,10 +16,11 @@ from textual.widgets import (
     Static,
     TextArea,
 )
+from ui.interfaces import ControllerInterface, UIRequest
 
 
 class SearchScreen(Screen):
-    """SQL Query Runner Screen"""
+    """SQL Query Runner Screen with QueryController integration"""
 
     CSS = """
     QueryScreen {
@@ -85,7 +87,7 @@ class SearchScreen(Screen):
 
     BINDINGS = [
         Binding("ctrl+e", "execute_query", "Execute", show=True),
-        Binding("ctrl+l", "clear_query", "Clear", show=True),
+        Binding("ctrl+z", "clear_query", "Clear", show=True),
         Binding("escape", "back", "Back", show=True),
     ]
 
@@ -110,6 +112,9 @@ class SearchScreen(Screen):
         ("Jersey", "jersey_number"),
         ("Active", "is_active"),
     ]
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
@@ -185,7 +190,48 @@ class SearchScreen(Screen):
             query += f" WHERE {constraint}"
         query += ";"
 
-        results_output.text = f"Executing query:\n{query}\n\n[Results would appear here]"
+        # Execute query via controller if available
+        if hasattr(self.app, "controller") and self.app.controller:
+            request = UIRequest(
+                action="execute_custom_query",
+                payload={"query": query}
+            )
+            response = self.app.controller.handle_request(request)
+
+            if response.success:
+                formatted_results = self._format_results(query, response.data)
+                results_output.text = formatted_results
+            else:
+                results_output.text = f"Error: {response.message}"
+        else:
+            results_output.text = f"Query built:\\n{query}\\n\\n[No controller available]"
+
+    def _format_results(self, query: str, data: list[dict]) -> str:
+        """Format query results for display"""
+        lines = [f"Executed query:\\n{query}\\n"]
+        lines.append("=" * 60)
+        
+        if not data:
+            lines.append("No results found.")
+            return "\\n".join(lines)
+        
+        # Headers
+        headers = list(data[0].keys())
+        header_line = " | ".join(headers)
+        lines.append(header_line)
+        lines.append("-" * len(header_line))
+        
+        # Rows (limit to first 50 for display)
+        for i, row in enumerate(data[:50]):
+            values = [str(row.get(h, "")) for h in headers]
+            lines.append(" | ".join(values))
+        
+        if len(data) > 50:
+            lines.append(f"\\n... and {len(data) - 50} more rows")
+        
+        lines.append(f"\\nTotal rows: {len(data)}")
+        
+        return "\\n".join(lines)
 
     def action_clear_query(self) -> None:
         self.query_one("#table-select", Select).value = Select.BLANK
@@ -196,4 +242,5 @@ class SearchScreen(Screen):
         self.query_one("#results-output", TextArea).text = "Query results will be displayed here."
 
     def action_back(self) -> None:
-        self.app.pop_screen()
+        self.dismiss()
+

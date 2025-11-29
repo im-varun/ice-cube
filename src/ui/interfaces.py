@@ -23,6 +23,9 @@ class UIResponse:
 
 
 class ControllerInterface(Protocol):
-    """Interface for controllers used by the UI"""
+    """
+    Interface for controllers used by the UI 
+    Any class with handle_request method that takes UIRequest and returns UIResponse is a valid controller
+    """
 
     def handle_request(self, request: UIRequest) -> UIResponse: ...

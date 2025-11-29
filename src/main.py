@@ -11,6 +11,8 @@ from textual.binding import Binding
 
 from ui.interfaces import ControllerInterface
 from ui.screens.home_screen import HomeScreen
+from controllers.query_controller import QueryController
+from database.query_engine import QueryEngine
 
 
 class IceCubeApp(App):
@@ -31,17 +33,20 @@ class IceCubeApp(App):
         Binding("ctrl+q", "quit", "Quit", show=True),
         Binding("ctrl+h", "home", "Home", show=False),
     ]
+    
+    MODES = {
+        "home": HomeScreen
+    }
 
-    def __init__(self, controller: ControllerInterface = None):
+    def __init__(self, controller: ControllerInterface):
         """
-        Initialize app with optional controller.
+        Initialize app with controller.
 
         Args:
-            controller: Optional controller instance for dependency injection.
-                        If None, will use mock controller for development.
+            controller: controller instance for dependency injection.
         """
         super().__init__()
-        self.controller = controller or self._create_mock_controller()
+        self.controller = controller 
         self.db_connected = True
 
     def _create_mock_controller(self):
@@ -65,7 +70,22 @@ class IceCubeApp(App):
 
 def main():
     """Entry point for the application"""
-    app = IceCubeApp()
+    # Load environment variables
+    from dotenv import load_dotenv
+    load_dotenv()
+
+    server = os.getenv("DB_SERVER")
+    database = os.getenv("DB_NAME")
+    user = os.getenv("DB_USER")
+    password = os.getenv("DB_PASSWORD")
+
+    if not all([server, database, user, password]):
+        print("Warning: Database credentials not found in .env file")
+        exit(0)
+
+    query_engine = QueryEngine(server, database, user, password)
+    controller = QueryController(query_engine)
+    app = IceCubeApp(controller=controller)
     app.run()
 
 
