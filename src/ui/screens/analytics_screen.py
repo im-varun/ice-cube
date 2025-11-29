@@ -4,22 +4,20 @@ Displays real results from database via QueryController
 """
 
 from textual.app import ComposeResult
-from textual.containers import Horizontal, Vertical, ScrollableContainer
+from textual.containers import Horizontal, ScrollableContainer, Vertical
 from textual.screen import Screen
 from textual.widgets import DataTable, Footer, Header, Static
-from ..widgets.query_card import QueryCard
-from ui.interfaces import ControllerInterface, UIRequest
-
 
 from query_registry import QUERIES
+from ui.interfaces import UIRequest
+
+from ..widgets.query_card import QueryCard
+
 
 class AnalyticsScreen(Screen):
     """Results screen with pre-defined queries using QueryController"""
 
-    BINDINGS = [
-        ("escape", "dismiss", "Return"),
-        ("ctrl+q", "quit", "Quit")
-    ]
+    BINDINGS = [("escape", "dismiss", "Return"), ("ctrl+q", "quit", "Quit")]
 
     def __init__(self, query_id: str = "most_penalized"):
         super().__init__()
@@ -67,7 +65,7 @@ class AnalyticsScreen(Screen):
         try:
             # Create request based on query_id
             request = UIRequest(action=self.query_id, payload={})
-            
+
             # Execute query via controller
             response = self.app.controller.handle_request(request)
 
@@ -111,4 +109,3 @@ class AnalyticsScreen(Screen):
 
     def action_dismiss(self) -> None:
         self.dismiss()
-

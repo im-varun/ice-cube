@@ -1,5 +1,6 @@
 import configparser
 
+
 def load_config(config_file: str) -> dict:
     """
     Loads a configuration file and returns its contents as a dictionary.
@@ -17,7 +18,7 @@ def load_config(config_file: str) -> dict:
 
     for section in config.sections():
         config_dict[section] = {}
-        
+
         for key, value in config.items(section):
             config_dict[section][key] = value
 

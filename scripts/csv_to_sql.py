@@ -1,9 +1,11 @@
 import os
 import sys
+
 import pandas as pd
 
 _CLEANED_DATA_DIR: str = "./data/clean/"
 _SQL_DIR: str = "./sql/"
+
 
 def csv_to_sql_pipeline() -> None:
     """
@@ -22,6 +24,7 @@ def csv_to_sql_pipeline() -> None:
     _csv_to_sql("game_teams_stats.csv")
     _csv_to_sql("player_info.csv")
     _csv_to_sql("team_info.csv")
+
 
 def _csv_to_sql(filename: str) -> None:
     """
@@ -42,12 +45,13 @@ def _csv_to_sql(filename: str) -> None:
 
     columns = df.columns.tolist()
 
-    with open(sql_filepath, 'a') as sql_file:
+    with open(sql_filepath, "a") as sql_file:
         for _, row in df.iterrows():
             values = ", ".join(_sql_safe_string(row[column]) for column in columns)
             sql_file.write(f"INSERT INTO {table_name} VALUES ({values});\n")
 
     print(f"[INFO] Finished converting {filename} to SQL insert statements")
+
 
 def _sql_safe_string(value: str) -> str:
     """
@@ -61,20 +65,18 @@ def _sql_safe_string(value: str) -> str:
     """
     if pd.isna(value) or value == "NULL":
         return "NULL"
-    
+
     if isinstance(value, bool):
         return f"'{value}'"
-    
+
     if isinstance(value, str):
-        return f"'{value.replace('\'', '\'\'')}'"
-    
+        return f"'{value.replace("'", "''")}'"
+
     return str(value)
 
+
 def _check_paths() -> None:
-    paths = {
-        "Cleaned data directory": _CLEANED_DATA_DIR,
-        "SQL directory": _SQL_DIR
-    }
+    paths = {"Cleaned data directory": _CLEANED_DATA_DIR, "SQL directory": _SQL_DIR}
 
     for name, path in paths.items():
         if not os.path.isdir(path):
@@ -82,9 +84,10 @@ def _check_paths() -> None:
             print("[INFO] Exiting the script...")
             sys.exit(1)
 
+
 if __name__ == "__main__":
     _check_paths()
-    
+
     if os.path.isfile(os.path.join(_SQL_DIR, "populate.sql")):
         os.remove(os.path.join(_SQL_DIR, "populate.sql"))
 

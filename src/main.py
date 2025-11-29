@@ -1,5 +1,6 @@
 import os
 import sys
+
 ROOT_DIR_NAME = "ice-cube"
 curr_path = os.path.dirname(__file__)
 idx = curr_path.find(ROOT_DIR_NAME) + len(ROOT_DIR_NAME)
@@ -9,10 +10,10 @@ sys.path.insert(0, os.path.join(ROOT_PATH, "lib"))
 from textual.app import App
 from textual.binding import Binding
 
-from ui.interfaces import ControllerInterface
-from ui.screens.home_screen import HomeScreen
 from controllers.query_controller import QueryController
 from database.query_engine import QueryEngine
+from ui.interfaces import ControllerInterface
+from ui.screens.home_screen import HomeScreen
 
 
 class IceCubeApp(App):
@@ -33,10 +34,8 @@ class IceCubeApp(App):
         Binding("ctrl+q", "quit", "Quit", show=True),
         Binding("ctrl+h", "home", "Home", show=False),
     ]
-    
-    MODES = {
-        "home": HomeScreen
-    }
+
+    MODES = {"home": HomeScreen}
 
     def __init__(self, controller: ControllerInterface):
         """
@@ -46,7 +45,7 @@ class IceCubeApp(App):
             controller: controller instance for dependency injection.
         """
         super().__init__()
-        self.controller = controller 
+        self.controller = controller
         self.db_connected = True
 
     def _create_mock_controller(self):
@@ -72,6 +71,7 @@ def main():
     """Entry point for the application"""
     # Load environment variables
     from dotenv import load_dotenv
+
     load_dotenv()
 
     server = os.getenv("DB_SERVER")

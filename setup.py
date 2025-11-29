@@ -1,7 +1,10 @@
 import os
 import sys
+
 import pymssql
+
 from utils import load_config
+
 
 def setup_db() -> None:
     """
@@ -14,17 +17,12 @@ def setup_db() -> None:
     user = db_config["db"]["user"]
     password = db_config["db"]["password"]
 
-    conn = pymssql.connect(
-        server=server,
-        user=user,
-        password=password,
-        database=database
-    )
+    conn = pymssql.connect(server=server, user=user, password=password, database=database)
     cursor = conn.cursor()
 
     print("[INFO] Dropping any existing database tables...")
     _drop(conn, cursor)
-    
+
     print("[INFO] Re-populating the database with data...")
     _populate(conn, cursor)
 
@@ -33,19 +31,21 @@ def setup_db() -> None:
     cursor.close()
     conn.close()
 
+
 def _drop(conn: pymssql.Connection, cursor: pymssql.Cursor) -> None:
-        """
-        Drop existing database tables using the drop SQL script.
+    """
+    Drop existing database tables using the drop SQL script.
 
-        Args:
-            conn (pymssql.Connection): The database connection.
-            cursor (pymssql.Cursor): The database cursor.
-        """
-        drop_sql_file = "./sql/drop.sql"
+    Args:
+        conn (pymssql.Connection): The database connection.
+        cursor (pymssql.Cursor): The database cursor.
+    """
+    drop_sql_file = "./sql/drop.sql"
 
-        print("[INFO] Executing drop SQL script...")
-        _execute_sql_file(conn, cursor, drop_sql_file)
-        print("[INFO] Drop SQL script execution complete")
+    print("[INFO] Executing drop SQL script...")
+    _execute_sql_file(conn, cursor, drop_sql_file)
+    print("[INFO] Drop SQL script execution complete")
+
 
 def _populate(conn: pymssql.Connection, cursor: pymssql.Cursor) -> None:
     """
@@ -61,12 +61,15 @@ def _populate(conn: pymssql.Connection, cursor: pymssql.Cursor) -> None:
     print("[INFO] Executing schema SQL script...")
     _execute_sql_file(conn, cursor, schema_sql_file)
     print("[INFO] Schema SQL script execution complete")
-    
+
     print("[INFO] Executing populate SQL script with batching...")
     _execute_sql_file(conn, cursor, populate_sql_file, with_batching=True)
     print("[INFO] Populate SQL script execution complete")
 
-def _execute_sql_file(conn: pymssql.Connection, cursor: pymssql.Cursor, sql_file: str, with_batching: bool = False) -> None:
+
+def _execute_sql_file(
+    conn: pymssql.Connection, cursor: pymssql.Cursor, sql_file: str, with_batching: bool = False
+) -> None:
     """
     Execute SQL statements from a file, optionally using batching.
 
@@ -80,10 +83,10 @@ def _execute_sql_file(conn: pymssql.Connection, cursor: pymssql.Cursor, sql_file
         if with_batching:
             batch = []
             batch_counter = 0
-            
+
             BATCH_LIMIT = 10000
 
-            with open(sql_file, 'r') as file:
+            with open(sql_file, "r") as file:
                 for line in file:
                     batch.append(line)
 
@@ -96,7 +99,7 @@ def _execute_sql_file(conn: pymssql.Connection, cursor: pymssql.Cursor, sql_file
                         cursor.execute(sql_statements)
                         conn.commit()
                         print(f"[INFO] Batch {batch_counter} execution complete")
-                        
+
                         batch = []
 
             if batch:
@@ -110,7 +113,7 @@ def _execute_sql_file(conn: pymssql.Connection, cursor: pymssql.Cursor, sql_file
                 print(f"[INFO] Final batch {batch_counter} execution complete")
 
         else:
-            with open(sql_file, 'r') as file:
+            with open(sql_file, "r") as file:
                 sql_statements = file.read()
                 cursor.execute(sql_statements)
                 conn.commit()
@@ -123,11 +126,12 @@ def _execute_sql_file(conn: pymssql.Connection, cursor: pymssql.Cursor, sql_file
 
         sys.exit(1)
 
+
 def _check_paths() -> None:
     paths = {
         "SQL Drop script": "./sql/drop.sql",
         "SQL Schema script": "./sql/schema.sql",
-        "SQL Populate script": "./sql/populate.sql"
+        "SQL Populate script": "./sql/populate.sql",
     }
 
     for name, path in paths.items():
@@ -135,6 +139,7 @@ def _check_paths() -> None:
             print(f"[Error] {name} path '{path}' is invalid or does not exist")
             print("[INFO] Exiting the setup script...")
             sys.exit(1)
+
 
 if __name__ == "__main__":
     _check_paths()

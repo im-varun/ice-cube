@@ -4,6 +4,7 @@ Home Screen: NHL Dashboard
 
 import os
 import sys
+
 ROOT_DIR_NAME = "ice-cube"
 curr_path = os.path.dirname(__file__)
 idx = curr_path.find(ROOT_DIR_NAME) + len(ROOT_DIR_NAME)
@@ -14,12 +15,13 @@ if LIB_PATH != sys.path[0]:
     sys.path.insert(0, LIB_PATH)
 
 from textual.app import ComposeResult
-from textual.containers import Container, Vertical, Horizontal, Grid
-from textual.screen import Screen
-from textual.widgets import Static, Footer, Header, Button
 from textual.binding import Binding
+from textual.containers import Container, Grid, Horizontal, Vertical
+from textual.screen import Screen
+from textual.widgets import Button, Footer, Header, Static
 
-from ui.interfaces import ControllerInterface
+from ui.interfaces import UIRequest
+
 
 class HomeScreen(Screen):
     """Professional IceCube Home Screen with Working Navigation"""
@@ -221,7 +223,7 @@ class HomeScreen(Screen):
     BINDINGS = [
         Binding("f", "table_lookup", "Table Lookup", show=True, priority=True),
         Binding("p", "predefined_queries", "Signature Queries", show=True, priority=True),
-        Binding("ctrl+q", "quit", "Quit", show=True)
+        Binding("ctrl+q", "quit", "Quit", show=True),
     ]
 
     def __init__(self):
@@ -246,9 +248,9 @@ class HomeScreen(Screen):
                 with Container(classes="action-card"):
                     with Vertical(classes="card-content"):
                         yield Static("⚙️  SQL", classes="card-icon")
-                        yield Static("Custom Query Engine", classes="card-title")
+                        yield Static("Table Lookup", classes="card-title")
                         yield Static(
-                            "Write any SQL query with full control.\nPowerful. Flexible. Limitless.",
+                            "Search the tables directly\nFlexible but boring than our queries",
                             classes="card-desc",
                         )
                         yield Button("Launch Custom Query", id="btn-custom", classes="card-button")

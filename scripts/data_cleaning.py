@@ -1,6 +1,7 @@
 import os
 import sys
 import warnings
+
 import pandas as pd
 
 _RAW_DATA_DIR: str = "./data/raw/"
@@ -28,10 +29,11 @@ _SEASONS_TO_REMOVE: list = [
     "2015-2016",
     "2016-2017",
     "2017-2018",
-    "2018-2019"
+    "2018-2019",
 ]
 
 warnings.simplefilter(action="ignore", category=pd.errors.DtypeWarning)
+
 
 def cleaning_pipeline() -> None:
     """
@@ -51,6 +53,7 @@ def cleaning_pipeline() -> None:
     _clean_game_goalie_stats_csv()
     _clean_game_scratches_csv()
 
+
 def _clean_game_csv() -> None:
     """
     Cleans the game.csv file by formatting seasons, removing unwanted columns,
@@ -61,7 +64,7 @@ def _clean_game_csv() -> None:
     global _game_ids_removed
 
     filename = "game.csv"
-    
+
     raw_filepath = os.path.join(_RAW_DATA_DIR, filename)
 
     df = pd.read_csv(raw_filepath)
@@ -72,7 +75,7 @@ def _clean_game_csv() -> None:
         "venue_link",
         "venue_time_zone_id",
         "venue_time_zone_offset",
-        "venue_time_zone_tz"
+        "venue_time_zone_tz",
     ]
     df = df.drop(columns=drop_columns)
 
@@ -81,7 +84,7 @@ def _clean_game_csv() -> None:
 
     df = df[~df["season"].isin(_SEASONS_TO_REMOVE)]
 
-    df["date_time_GMT"] = df["date_time_GMT"].astype(str).str.replace('T', " ").str.replace('Z', "")
+    df["date_time_GMT"] = df["date_time_GMT"].astype(str).str.replace("T", " ").str.replace("Z", "")
 
     df = df.drop_duplicates()
 
@@ -90,6 +93,7 @@ def _clean_game_csv() -> None:
 
     print("[INFO] Finished cleaning game.csv")
     print(f"[INFO] Saved cleaned file to {cleaned_filepath}")
+
 
 def _clean_team_info_csv() -> None:
     """
@@ -103,10 +107,7 @@ def _clean_team_info_csv() -> None:
 
     df = pd.read_csv(raw_filepath)
 
-    drop_columns = [
-        "franchiseId",
-        "link"
-    ]
+    drop_columns = ["franchiseId", "link"]
     df = df.drop(columns=drop_columns)
 
     df = df.drop_duplicates()
@@ -116,6 +117,7 @@ def _clean_team_info_csv() -> None:
 
     print("[INFO] Finished cleaning team_info.csv")
     print(f"[INFO] Saved cleaned file to {cleaned_filepath}")
+
 
 def _clean_player_info_csv() -> None:
     """
@@ -130,13 +132,10 @@ def _clean_player_info_csv() -> None:
 
     df = pd.read_csv(raw_filepath)
 
-    drop_columns = [
-        "height_cm"
-    ]
+    drop_columns = ["height_cm"]
     df = df.drop(columns=drop_columns)
 
-
-    df["birthDate"] = df["birthDate"].astype(str).str.replace('T', " ").str.replace('Z', "")
+    df["birthDate"] = df["birthDate"].astype(str).str.replace("T", " ").str.replace("Z", "")
 
     df["weight"] = df["weight"].fillna(0).astype(int)
 
@@ -147,6 +146,7 @@ def _clean_player_info_csv() -> None:
 
     print("[INFO] Finished cleaning player_info.csv")
     print(f"[INFO] Saved cleaned file to {cleaned_filepath}")
+
 
 def _clean_game_scratches_csv() -> None:
     """
@@ -171,6 +171,7 @@ def _clean_game_scratches_csv() -> None:
     print("[INFO] Finished cleaning game_scratches.csv")
     print(f"[INFO] Saved cleaned file to {cleaned_filepath}")
 
+
 def _clean_game_officials_csv() -> None:
     """
     Cleans the game_officials.csv file by removing entries related to removed games
@@ -193,6 +194,7 @@ def _clean_game_officials_csv() -> None:
 
     print("[INFO] Finished cleaning game_officials.csv")
     print(f"[INFO] Saved cleaned file to {cleaned_filepath}")
+
 
 def _clean_game_plays_csv() -> None:
     """
@@ -222,7 +224,7 @@ def _clean_game_plays_csv() -> None:
     df["st_x"] = df["st_x"].fillna(0)
     df["st_y"] = df["st_y"].fillna(0)
 
-    df["dateTime"] = df["dateTime"].astype(str).str.replace('T', " ").str.replace('Z', "")
+    df["dateTime"] = df["dateTime"].astype(str).str.replace("T", " ").str.replace("Z", "")
 
     df = df.drop_duplicates()
 
@@ -231,6 +233,7 @@ def _clean_game_plays_csv() -> None:
 
     print("[INFO] Finished cleaning game_plays.csv")
     print(f"[INFO] Saved cleaned file to {cleaned_filepath}")
+
 
 def _clean_game_goals_csv() -> None:
     """
@@ -257,6 +260,7 @@ def _clean_game_goals_csv() -> None:
     print("[INFO] Finished cleaning game_goals.csv")
     print(f"[INFO] Saved cleaned file to {cleaned_filepath}")
 
+
 def _clean_game_penalties_csv() -> None:
     """
     Cleans the game_penalties.csv file by removing entries related to removed plays
@@ -279,6 +283,7 @@ def _clean_game_penalties_csv() -> None:
 
     print("[INFO] Finished cleaning game_penalties.csv")
     print(f"[INFO] Saved cleaned file to {cleaned_filepath}")
+
 
 def _clean_game_plays_players_csv() -> None:
     """
@@ -303,6 +308,7 @@ def _clean_game_plays_players_csv() -> None:
     print("[INFO] Finished cleaning game_plays_players.csv")
     print(f"[INFO] Saved cleaned file to {cleaned_filepath}")
 
+
 def _clean_game_shifts_csv() -> None:
     """
     Cleans the game_shifts.csv file by removing entries related to removed games,
@@ -320,7 +326,7 @@ def _clean_game_shifts_csv() -> None:
 
     df["shift_end"] = df.apply(
         lambda row: row["shift_start"] + 1 if pd.isna(row["shift_end"]) else row["shift_end"],
-        axis=1
+        axis=1,
     )
     df["shift_end"] = df["shift_end"].astype(int)
 
@@ -331,6 +337,7 @@ def _clean_game_shifts_csv() -> None:
 
     print("[INFO] Finished cleaning game_shifts.csv")
     print(f"[INFO] Saved cleaned file to {cleaned_filepath}")
+
 
 def _clean_game_teams_stats_csv() -> None:
     """
@@ -355,6 +362,7 @@ def _clean_game_teams_stats_csv() -> None:
     print("[INFO] Finished cleaning game_teams_stats.csv")
     print(f"[INFO] Saved cleaned file to {cleaned_filepath}")
 
+
 def _clean_game_skater_stats_csv() -> None:
     """
     Cleans the game_skater_stats.csv file by removing entries related to removed games
@@ -377,6 +385,7 @@ def _clean_game_skater_stats_csv() -> None:
 
     print("[INFO] Finished cleaning game_skater_stats.csv")
     print(f"[INFO] Saved cleaned file to {cleaned_filepath}")
+
 
 def _clean_game_goalie_stats_csv() -> None:
     """
@@ -401,24 +410,23 @@ def _clean_game_goalie_stats_csv() -> None:
     print("[INFO] Finished cleaning game_goalie_stats.csv")
     print(f"[INFO] Saved cleaned file to {cleaned_filepath}")
 
+
 def _check_paths() -> None:
-    paths = {
-        "Raw data directory": _RAW_DATA_DIR,
-        "Cleaned data directory": _CLEANED_DATA_DIR
-    }
+    paths = {"Raw data directory": _RAW_DATA_DIR, "Cleaned data directory": _CLEANED_DATA_DIR}
 
     for name, path in paths.items():
         if not os.path.isdir(path):
             print(f"[Error] {name} path '{path}' is invalid or does not exist")
-            
+
             if name == "Cleaned data directory":
                 print(f"[INFO] Creating cleaned data directory at '{path}'")
                 os.makedirs(path)
                 print(f"[INFO] Created cleaned data directory at '{path}'")
-            
+
             else:
                 print("[INFO] Exiting the script...")
                 sys.exit(1)
+
 
 if __name__ == "__main__":
     _check_paths()

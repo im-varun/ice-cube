@@ -1,6 +1,8 @@
 import os
-import pymssql
 from typing import Any, Optional, cast
+
+import pymssql
+
 
 class QueryEngine:
     def __init__(self, server: str, database: str, user: str, password: str) -> None:
@@ -13,12 +15,7 @@ class QueryEngine:
             user (str): The username for database authentication.
             password (str): The password for database authentication.
         """
-        self._conn = pymssql.connect(
-            server=server,
-            database=database,
-            user=user,
-            password=password
-        )
+        self._conn = pymssql.connect(server=server, database=database, user=user, password=password)
         self._cursor = self._conn.cursor(as_dict=True)
 
     def close(self) -> None:
@@ -42,7 +39,7 @@ class QueryEngine:
         status = self._drop()
         if status == 500:
             return status
-        
+
         status = self._populate()
         if status == 500:
             return status
@@ -100,10 +97,10 @@ class QueryEngine:
             if with_batching:
                 batch = []
                 batch_counter = 0
-                
+
                 BATCH_LIMIT = 10000
 
-                with open(sql_file, 'r') as file:
+                with open(sql_file, "r") as file:
                     for line in file:
                         batch.append(line)
 
@@ -113,7 +110,7 @@ class QueryEngine:
                             sql_statements = "".join(batch)
                             self._cursor.execute(sql_statements)
                             self._conn.commit()
-                            
+
                             batch = []
 
                 if batch:
@@ -124,7 +121,7 @@ class QueryEngine:
                     self._conn.commit()
 
             else:
-                with open(sql_file, 'r') as file:
+                with open(sql_file, "r") as file:
                     sql_statements = file.read()
                     self._cursor.execute(sql_statements)
                     self._conn.commit()
@@ -155,17 +152,17 @@ class QueryEngine:
             rows = cast(list[dict[str, Any]], rows)
 
             return rows
-        
+
         except Exception:
             return 500
 
     def execute_headtohead(
-            self, 
-            player1_firstname: str, 
-            player1_lastname: str, 
-            player2_firstname: str, 
-            player2_lastname: str
-        ) -> list[dict[str, Any]] | int:
+        self,
+        player1_firstname: str,
+        player1_lastname: str,
+        player2_firstname: str,
+        player2_lastname: str,
+    ) -> list[dict[str, Any]] | int:
         """
         Execute a head-to-head comparison query between two players.
 
@@ -218,23 +215,17 @@ class QueryEngine:
             GROUP BY pg1.player_name, pg2.player_name;
             """
             self._cursor.execute(
-                query,
-                (
-                    player1_firstname,
-                    player1_lastname,
-                    player2_firstname,
-                    player2_lastname
-                )
+                query, (player1_firstname, player1_lastname, player2_firstname, player2_lastname)
             )
 
             rows = self._cursor.fetchall()
             rows = cast(list[dict[str, Any]], rows)
 
             return rows
-        
+
         except Exception:
             return 500
-    
+
     def execute_revengegameeffect(self) -> list[dict[str, Any]] | int:
         """
         Execute a query to analyze the revenge game effect for players.
@@ -274,10 +265,10 @@ class QueryEngine:
             rows = cast(list[dict[str, Any]], rows)
 
             return rows
-        
+
         except Exception:
             return 500
-    
+
     def execute_homerinksideadvantage(self) -> list[dict[str, Any]] | int:
         """
         Execute a query to analyze the home rink side advantage in games.
@@ -306,10 +297,10 @@ class QueryEngine:
             rows = cast(list[dict[str, Any]], rows)
 
             return rows
-        
+
         except Exception:
             return 500
-    
+
     def execute_birthdaycurseanalysis(self) -> list[dict[str, Any]] | int:
         """
         Execute a query to analyze the birthday curse effect for players.
@@ -341,10 +332,10 @@ class QueryEngine:
             rows = cast(list[dict[str, Any]], rows)
 
             return rows
-        
+
         except Exception:
             return 500
-    
+
     def execute_mostpenalizedplayers(self) -> list[dict[str, Any]] | int:
         """
         Execute a query to find the top 10 most penalized players.
@@ -383,8 +374,8 @@ class QueryEngine:
         """
         try:
             query = """
-            SELECT 
-                event, 
+            SELECT
+                event,
                 COUNT(*) AS event_occurrences
             FROM game_plays
             GROUP BY event
@@ -396,10 +387,10 @@ class QueryEngine:
             rows = cast(list[dict[str, Any]], rows)
 
             return rows
-        
+
         except Exception:
             return 500
-    
+
     def execute_topshootingteams(self) -> list[dict[str, Any]] | int:
         """
         Execute a query to find the teams with the most shots.
@@ -438,9 +429,9 @@ class QueryEngine:
         """
         try:
             query = """
-            SELECT TOP 10 
-                player_id, 
-                season, 
+            SELECT TOP 10
+                player_id,
+                season,
                 SUM(assists) AS total_assists
             FROM game_skater_stats
             JOIN player_info ON game_skater_stats.player_id = player_info.player_id
@@ -454,10 +445,10 @@ class QueryEngine:
             rows = cast(list[dict[str, Any]], rows)
 
             return rows
-        
+
         except Exception:
             return 500
-    
+
     def execute_longestgames(self) -> list[dict[str, Any]] | int:
         """
         Execute a query to find the longest games based on the number of events.
@@ -468,8 +459,8 @@ class QueryEngine:
         """
         try:
             query = """
-            SELECT TOP 10 
-                game_id, 
+            SELECT TOP 10
+                game_id,
                 COUNT(*) AS num_events
             FROM game_plays
             GROUP BY game_id
@@ -481,10 +472,10 @@ class QueryEngine:
             rows = cast(list[dict[str, Any]], rows)
 
             return rows
-        
+
         except Exception:
             return 500
-    
+
     def execute_playerswithlongestavgshift(self) -> list[dict[str, Any]] | int:
         """
         Execute a query to find the players with the longest average shift duration.
@@ -520,16 +511,13 @@ class QueryEngine:
             rows = cast(list[dict[str, Any]], rows)
 
             return rows
-        
+
         except Exception:
             return 500
-    
+
     def execute_topscoringplayers(
-            self, 
-            penalty_threshold: int, 
-            minimum_goals: int, 
-            limit_rows: int
-        ) -> list[dict[str, Any]] | int:
+        self, penalty_threshold: int, minimum_goals: int, limit_rows: int
+    ) -> list[dict[str, Any]] | int:
         """
         Execute a query to find the top scoring players excluding those
         who exceed a penalty threshold.
@@ -575,15 +563,13 @@ class QueryEngine:
             rows = cast(list[dict[str, Any]], rows)
 
             return rows
-        
+
         except Exception:
             return 500
-    
+
     def execute_playerswhoscorebutnotassist(
-            self, 
-            minimum_goals: int, 
-            limit_rows: int
-        ) -> list[dict[str, Any]] | int:
+        self, minimum_goals: int, limit_rows: int
+    ) -> list[dict[str, Any]] | int:
         """
         Execute a query to find players who score goals but do not provide assists.
 
@@ -631,6 +617,6 @@ class QueryEngine:
             rows = cast(list[dict[str, Any]], rows)
 
             return rows
-        
+
         except Exception:
             return 500
