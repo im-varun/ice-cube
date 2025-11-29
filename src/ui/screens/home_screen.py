@@ -295,20 +295,20 @@ class HomeScreen(Screen):
     def action_table_lookup(self) -> None:
         """Launch Custom Query Engine"""
         try:
-            from ui.screens.query_screen import QueryScreen
+            from ui.screens.search_screen import SearchScreen
 
             self.notify("Launching Search Engine", severity="information")
-            self.app.push_screen(QueryScreen())
+            self.app.push_screen(SearchScreen())
         except Exception as e:
             self.notify(f"Error loading Query Screen: {e}", severity="error")
 
     def action_predefined_queries(self) -> None:
         """Launch Signature Queries Dashboard"""
         try:
-            from ui.screens.results_screen import ResultsScreen
+            from ui.screens.analytics_screen import AnalyticsScreen
 
             self.notify("📊 Loading Signature Queries...", severity="information")
-            self.app.push_screen(ResultsScreen("top_scoring"))
+            self.app.push_screen(AnalyticsScreen("top_scoring"))
         except Exception as e:
             self.notify(f"Error loading Results Screen: {e}", severity="error")
 

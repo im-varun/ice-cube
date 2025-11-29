@@ -1,5 +1,5 @@
 """
-Query Screen - SQL Query Runner Interface
+Search Screen: used for table lookups from all the tables 
 """
 
 from textual.app import ComposeResult
@@ -17,7 +17,7 @@ from textual.widgets import (
 )
 
 
-class QueryScreen(Screen):
+class SearchScreen(Screen):
     """SQL Query Runner Screen"""
 
     CSS = """

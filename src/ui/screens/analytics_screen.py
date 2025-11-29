@@ -1,5 +1,5 @@
 """
-Results Screen – 12 pre-defined queries in ONE full-height column
+Analytics Screen - 12 pre-defined queries in ONE full-height column
 No scrolling in sidebar, only results scroll
 """
 
@@ -10,7 +10,7 @@ from textual.widgets import DataTable, Footer, Header, Static
 from ..widgets.query_card import QueryCard
 
 
-class ResultsScreen(Screen):
+class AnalyticsScreen(Screen):
     """Results screen with 12 queries in a single, full-height column"""
 
     BINDINGS = [
@@ -87,7 +87,7 @@ class ResultsScreen(Screen):
     # ────────────────────────────────────────────────────────────────
     def on_query_card_selected(self, event: QueryCard.Selected) -> None:
         """Switch to new result when a sidebar query is clicked"""
-        self.app.push_screen(ResultsScreen(event.query_id))
+        self.app.push_screen(AnalyticsScreen(event.query_id))
 
     def action_back(self) -> None:
         """Return to Home Screen"""
