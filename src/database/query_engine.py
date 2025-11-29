@@ -266,7 +266,7 @@ class QueryEngine:
                 )
             GROUP BY p.player_id, p.firstName, p.lastName, t.team_id, t.teamName
             HAVING COUNT(DISTINCT s.game_id) >= 1
-            ORDER BY total_goals + total_assists DESC;
+            ORDER BY SUM(s.goals) + SUM(s.assists) DESC;
             """
             self._cursor.execute(query)
 
@@ -291,7 +291,7 @@ class QueryEngine:
             SELECT
                 g.home_rink_side_start,
                 COUNT(*) AS total_games,
-                SUM(CASE WHEN ts.won = 1 AND ts.HoA = 'home' THEN 1 ELSE 0 END) AS
+                SUM(CASE WHEN ts.won = 'True' AND ts.HoA = 'home' THEN 1 ELSE 0 END) AS
                 home_wins,
                 ROUND(AVG(CAST(ts.goals AS FLOAT)), 2) AS avg_goals,
                 ROUND(AVG(CAST(ts.faceOffWinPercentage AS FLOAT)), 2) AS avg_faceoff_pct
