@@ -6,18 +6,20 @@ Polished design with working navigation
 
 import os
 import sys
-
-# Add lib/ directory for textual
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "..", "lib"))
-# Add parent directory to access shared
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../.."))
+ROOT_DIR_NAME = "ice-cube"
+curr_path = os.path.dirname(__file__)
+idx = curr_path.find(ROOT_DIR_NAME) + len(ROOT_DIR_NAME)
+ROOT_PATH = curr_path[:idx]
+LIB_PATH = os.path.join(ROOT_PATH, "lib")
+if LIB_PATH != sys.path[0]:
+    print("inserting to the path")
+    sys.path.insert(0, LIB_PATH)
 
 from textual.app import ComposeResult
 from textual.containers import Container, Vertical, Horizontal, Grid
 from textual.screen import Screen
 from textual.widgets import Static, Footer, Header, Button
 from textual.binding import Binding
-from ui.interfaces import ControllerInterface, UIRequest
 
 
 class HomeScreen(Screen):
@@ -218,15 +220,13 @@ class HomeScreen(Screen):
     """
 
     BINDINGS = [
-        Binding("c", "custom_query", "Custom Query", show=True, priority=True),
+        Binding("s", "Search", "Table Lookup", show=True, priority=True),
         Binding("p", "predefined_queries", "Signature Queries", show=True, priority=True),
-        Binding("d", "disconnect", "Disconnect", show=True),
         Binding("ctrl+q", "quit", "Quit", show=True),
     ]
 
-    def __init__(self, controller: ControllerInterface):
+    def __init__(self):
         super().__init__()
-        self.controller = controller
 
     def compose(self) -> ComposeResult:
         yield Header()
@@ -284,7 +284,7 @@ class HomeScreen(Screen):
     def on_button_pressed(self, event: Button.Pressed) -> None:
         """Handle button clicks"""
         if event.button.id == "btn-custom":
-            self.action_custom_query()
+            self.action_table_lookup()
         elif event.button.id == "btn-predefined":
             self.action_predefined_queries()
 
@@ -292,13 +292,13 @@ class HomeScreen(Screen):
     # NAVIGATION ACTIONS
     # ══════════════════════════════════════════════════════════
 
-    def action_custom_query(self) -> None:
+    def action_table_lookup(self) -> None:
         """Launch Custom Query Engine"""
         try:
             from ui.screens.query_screen import QueryScreen
 
-            self.notify("🔧 Launching Custom Query Engine...", severity="information")
-            self.app.push_screen(QueryScreen(self.controller))
+            self.notify("Launching Search Engine", severity="information")
+            self.app.push_screen(QueryScreen())
         except Exception as e:
             self.notify(f"Error loading Query Screen: {e}", severity="error")
 
