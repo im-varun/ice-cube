@@ -1,9 +1,0 @@
-# TODO
-
-1. Clean up project directory for code submission on UM Learn
-2. Test setup.py script
-    - first, delete existing tables in the database separately
-    - then, run setup.py to recreate tables and populate them with data
-3. Copy raw data files to the 'data/raw' directory
-    - generate cleaned data files in the 'data/cleaned' directory using data_cleaning.py
-    - generate populate.sql in the 'sql' directory using cleaned data files and csv_to_sql.py

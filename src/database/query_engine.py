@@ -9,7 +9,7 @@ class QueryEngine:
     Available methods:
     - close()
     - execute_refreshdb()
-    
+
     Avaiilable Querys
     - execute_birthdaycurseanalysis()
     - execute_headtohead()

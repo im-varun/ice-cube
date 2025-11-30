@@ -1,9 +1,18 @@
 # src/controllers/query_controller.py
 from typing import Any
 
+from controllers import data_formatter
 from database.query_engine import QueryEngine
-from ui.interfaces import ControllerInterface, UIRequest, UIResponse
 from query_registry import Query
+from ui.interfaces import ControllerInterface, UIRequest, UIResponse
+
+
+def debug(data):
+    import os
+
+    DIR = os.path.dirname(__file__).split("ice-cube")[0]
+    with open(DIR + "out.txt", "a") as f:
+        f.write(str(data))
 
 
 class QueryController(ControllerInterface):
@@ -27,29 +36,29 @@ class QueryController(ControllerInterface):
             # Route to appropriate query method based on action
             if action == "custom":
                 result = self._handle_custom_query(payload)
-            elif action == Query.HEAD_TO_HEAD:
+            elif action == Query.HEAD_TO_HEAD.value.id:
                 result = self._handle_head_to_head(payload)
-            elif action == Query.REVENGE_GAME_EFFECT:
+            elif action == Query.REVENGE_GAME_EFFECT.value.id:
                 result = self._handle_revenge_game_effect()
-            elif action == Query.HOME_RINK_ADVANTAGE:
+            elif action == Query.HOME_RINK_ADVANTAGE.value.id:
                 result = self._handle_home_rink_advantage()
-            elif action == Query.BIRTHDAY_CURSE:
+            elif action == Query.BIRTHDAY_CURSE.value.id:
                 result = self._handle_birthday_curse()
-            elif action == Query.MOST_PENALIZED_TEAMS:
+            elif action == Query.MOST_PENALIZED_TEAMS.value.id:
                 result = self._handle_most_penalized()
-            elif action == Query.PLAY_TYPES:
+            elif action == Query.PLAY_TYPES.value.id:
                 result = self._handle_common_play_types()
-            elif action == Query.TOP_SHOOTING_TEAMS:
+            elif action == Query.TOP_SHOOTING_TEAMS.value.id:
                 result = self._handle_top_shooting_teams()
-            elif action == Query.MOST_ASSISTS:
+            elif action == Query.MOST_ASSISTS.value.id:
                 result = self._handle_most_assists()
-            elif action == Query.LONGEST_GAMES:
+            elif action == Query.LONGEST_GAMES.value.id:
                 result = self._handle_longest_games()
-            elif action == Query.LONGEST_AVG_SHIFT:
+            elif action == Query.LONGEST_AVG_SHIFT.value.id:
                 result = self._handle_longest_avg_shift()
-            elif action == Query.TOP_SCORING_PLAYERS:
+            elif action == Query.TOP_SCORING_PLAYERS.value.id:
                 result = self._handle_top_scoring_players(payload)
-            elif action == Query.LONE_WOLFS:
+            elif action == Query.LONE_WOLFS.value.id:
                 result = self._handle_score_not_assist(payload)
             elif action == "refresh":
                 result = self._handle_refresh_db()
@@ -72,62 +81,76 @@ class QueryController(ControllerInterface):
 
     def _handle_head_to_head(self, payload: dict[str, Any]) -> list[dict[str, Any]] | int:
         """Execute head-to-head player comparison"""
-        return self.query_engine.execute_headtohead(
-            player1_firstname=payload.get("player1_firstname"),
-            player1_lastname=payload.get("player1_lastname"),
-            player2_firstname=payload.get("player2_firstname"),
-            player2_lastname=payload.get("player2_lastname"),
+        player1_name = f"{payload.get('Player_1')} ".split(" ", 1)
+        player2_name = f"{payload.get('Player_2')} ".split(" ", 1)
+        result = self.query_engine.execute_headtohead(
+            player1_firstname=player1_name[0],
+            player1_lastname=player1_name[1],
+            player2_firstname=player2_name[0],
+            player2_lastname=player2_name[1],
         )
+        return data_formatter.format_head_to_head(result)
 
     def _handle_revenge_game_effect(self) -> list[dict[str, Any]] | int:
         """Execute revenge game effect query"""
-        return self.query_engine.execute_revengegameeffect()
+        result = self.query_engine.execute_revengegameeffect()
+        return data_formatter.format_revenge_game_effect(result)
 
     def _handle_home_rink_advantage(self) -> list[dict[str, Any]] | int:
         """Execute home rink advantage query"""
-        return self.query_engine.execute_homerinksideadvantage()
+        result = self.query_engine.execute_homerinksideadvantage()
+        return data_formatter.format_home_rink_advantage(result)
 
     def _handle_birthday_curse(self) -> list[dict[str, Any]] | int:
         """Execute birthday curse analysis query"""
-        return self.query_engine.execute_birthdaycurseanalysis()
+        result = self.query_engine.execute_birthdaycurseanalysis()
+        return data_formatter.format_birthday_curse(result)
 
     def _handle_most_penalized(self) -> list[dict[str, Any]] | int:
         """Get most penalized players"""
-        return self.query_engine.execute_mostpenalizedplayers()
+        result = self.query_engine.execute_mostpenalizedplayers()
+        return data_formatter.format_most_penalized(result)
 
     def _handle_common_play_types(self) -> list[dict[str, Any]] | int:
         """Get most common play types"""
-        return self.query_engine.execute_mostcommonplaytypes()
+        result = self.query_engine.execute_mostcommonplaytypes()
+        return data_formatter.format_common_play_types(result)
 
     def _handle_top_shooting_teams(self) -> list[dict[str, Any]] | int:
         """Get top shooting teams"""
-        return self.query_engine.execute_topshootingteams()
+        result = self.query_engine.execute_topshootingteams()
+        return data_formatter.format_top_shooting_teams(result)
 
     def _handle_most_assists(self) -> list[dict[str, Any]] | int:
         """Get players with most assists"""
-        return self.query_engine.execute_playerswithmostassists()
+        result = self.query_engine.execute_playerswithmostassists()
+        return data_formatter.format_most_assists(result)
 
     def _handle_longest_games(self) -> list[dict[str, Any]] | int:
         """Get longest games"""
-        return self.query_engine.execute_longestgames()
+        result = self.query_engine.execute_longestgames()
+        return data_formatter.format_longest_games(result)
 
     def _handle_longest_avg_shift(self) -> list[dict[str, Any]] | int:
         """Get players with longest average shift"""
-        return self.query_engine.execute_playerswithlongestavgshift()
+        result = self.query_engine.execute_playerswithlongestavgshift()
+        return data_formatter.format_longest_avg_shift(result)
 
     def _handle_top_scoring_players(self, payload: dict[str, Any]) -> list[dict[str, Any]] | int:
         """Get top scoring players with filters"""
-        return self.query_engine.execute_topscoringplayers(
+        result = self.query_engine.execute_topscoringplayers(
             penalty_threshold=payload.get("penalty_threshold", 10),
             minimum_goals=payload.get("minimum_goals", 5),
             limit_rows=payload.get("limit_rows", 10),
         )
+        return data_formatter.format_top_scoring_players(result)
 
     def _handle_score_not_assist(self, payload: dict[str, Any]) -> list[dict[str, Any]] | int:
         """Get players who score but don't assist"""
-        return self.query_engine.execute_playerswhoscorebutnotassist(
+        result = self.query_engine.execute_playerswhoscorebutnotassist(
             minimum_goals=payload.get("minimum_goals", 5), limit_rows=payload.get("limit_rows", 10)
         )
+        return data_formatter.format_score_not_assist(result)
 
     def _handle_refresh_db(self) -> None | int:
         """Refresh the database"""

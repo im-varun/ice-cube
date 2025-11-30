@@ -491,3 +491,61 @@ Button.-info:hover {
 .text-right {
     text-align: right;
 }
+
+/* Query Parameter Input Form Styles */
+.query-description {
+    color: #8bb4e8;
+    text-align: center;
+    margin: 1 0 2 0;
+    text-style: italic;
+}
+
+.input-form {
+    background: #0d1f3a;
+    border: solid #1e3a5f;
+    padding: 3;
+    margin: 2;
+}
+
+.form-label {
+    color: #00d4ff;
+    text-style: bold;
+    margin-bottom: 2;
+    text-align: center;
+}
+
+.input-label {
+    color: #6b9bd1;
+    margin: 1 0 0 0;
+}
+
+.param-input {
+    width: 100%;
+    margin-bottom: 1;
+    background: #08131f;
+    border: solid #1e3a5f;
+    color: #e0e7ff;
+}
+
+.param-input:focus {
+    border: solid #00d4ff;
+}
+
+#submit-btn {
+    width: 100%;
+    margin-top: 2;
+    background: #1e3a5f;
+    color: #00d4ff;
+    border: solid #00d4ff;
+}
+
+#submit-btn:hover {
+    background: #00d4ff;
+    color: #0a0f1c;
+    text-style: bold;
+}
+
+#results-container {
+    margin-top: 2;
+}
+
