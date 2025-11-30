@@ -24,7 +24,6 @@ class QueryController(ControllerInterface):
 
         try:
             # Route to appropriate query method based on action
-            # Route to appropriate query method based on action
             if action == "execute_custom_query":
                 result = self._handle_custom_query(payload)
             elif action == "head_to_head":

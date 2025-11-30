@@ -5,6 +5,26 @@ import pymssql
 
 
 class QueryEngine:
+    """
+    Available methods:
+    - close()
+    - execute_refreshdb()
+    
+    Avaiilable Querys
+    - execute_birthdaycurseanalysis()
+    - execute_headtohead()
+    - execute_homerinksideadvantage()
+    - execute_longestgames()
+    - execute_mostcommonplaytypes()
+    - execute_mostpenalizedplayers()
+    - execute_playerswhoscorebutnotassist()
+    - execute_playerswithlongestavgshift()
+    - execute_playerswithmostassists()
+    - execute_revengegameeffect()
+    - execute_topscoringplayers()
+    - execute_topshootingteams()
+    """
+
     def __init__(self, server: str, database: str, user: str, password: str) -> None:
         """
         Initialize the QueryEngine with database connection parameters.
