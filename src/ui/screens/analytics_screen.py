@@ -8,7 +8,7 @@ from textual.containers import Horizontal, ScrollableContainer, Vertical
 from textual.screen import Screen
 from textual.widgets import DataTable, Footer, Header, Static
 
-from query_registry import QUERIES
+from query_registry import Query
 from ui.interfaces import UIRequest
 
 from ..widgets.query_card import QueryCard
@@ -19,7 +19,7 @@ class AnalyticsScreen(Screen):
 
     BINDINGS = [("escape", "dismiss", "Return"), ("ctrl+q", "quit", "Quit")]
 
-    def __init__(self, query_id: str = "most_penalized"):
+    def __init__(self, query_id: str = Query.PLAY_TYPES.value.id):
         super().__init__()
         self.query_id = query_id
 
@@ -34,14 +34,13 @@ class AnalyticsScreen(Screen):
                 yield Static("PRE-DEFINED QUERIES", classes="sidebar-title")
 
                 # ONE QueryCard per row
-                for title, qid in QUERIES:
-                    yield QueryCard(title, qid)
+                for query_info in Query.list_queries():
+                    yield QueryCard(query_info.value.title, query_info.value.id)
 
             # ── RIGHT CONTENT: Title + scrollable table only ───────────
             with Vertical(classes="content-area"):
                 # Dynamic title
-                title_map = {qid: title for title, qid in QUERIES}
-                yield Static(title_map.get(self.query_id, "Query Results"), classes="content-title")
+                yield Static(Query.get_info(self.query_id).title, classes="content-title")
 
                 # Scrollable results container
                 with ScrollableContainer():

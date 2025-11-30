@@ -3,6 +3,7 @@ from typing import Any
 
 from database.query_engine import QueryEngine
 from ui.interfaces import ControllerInterface, UIRequest, UIResponse
+from query_registry import Query
 
 
 class QueryController(ControllerInterface):
@@ -24,33 +25,33 @@ class QueryController(ControllerInterface):
 
         try:
             # Route to appropriate query method based on action
-            if action == "execute_custom_query":
+            if action == "custom":
                 result = self._handle_custom_query(payload)
-            elif action == "head_to_head":
+            elif action == Query.HEAD_TO_HEAD:
                 result = self._handle_head_to_head(payload)
-            elif action == "revenge_game_effect":
+            elif action == Query.REVENGE_GAME_EFFECT:
                 result = self._handle_revenge_game_effect()
-            elif action == "home_rink_advantage":
+            elif action == Query.HOME_RINK_ADVANTAGE:
                 result = self._handle_home_rink_advantage()
-            elif action == "birthday_curse":
+            elif action == Query.BIRTHDAY_CURSE:
                 result = self._handle_birthday_curse()
-            elif action == "penalized_teams":
+            elif action == Query.MOST_PENALIZED_TEAMS:
                 result = self._handle_most_penalized()
-            elif action == "play_types":
+            elif action == Query.PLAY_TYPES:
                 result = self._handle_common_play_types()
-            elif action == "top_shooting_teams":
+            elif action == Query.TOP_SHOOTING_TEAMS:
                 result = self._handle_top_shooting_teams()
-            elif action == "most_assists":
+            elif action == Query.MOST_ASSISTS:
                 result = self._handle_most_assists()
-            elif action == "longest_games":
+            elif action == Query.LONGEST_GAMES:
                 result = self._handle_longest_games()
-            elif action == "longest_avg_shift":
+            elif action == Query.LONGEST_AVG_SHIFT:
                 result = self._handle_longest_avg_shift()
-            elif action == "top_scoring":
+            elif action == Query.TOP_SCORING_PLAYERS:
                 result = self._handle_top_scoring_players(payload)
-            elif action == "score_not_assist":
+            elif action == Query.LONE_WOLFS:
                 result = self._handle_score_not_assist(payload)
-            elif action == "refresh_db":
+            elif action == "refresh":
                 result = self._handle_refresh_db()
             else:
                 return UIResponse(success=False, message=f"Unknown action: {action}")
