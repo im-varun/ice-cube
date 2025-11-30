@@ -1,6 +1,15 @@
 import os
+import sys
 from typing import Any, Optional, cast
 
+ROOT_DIR_NAME = "ice-cube"
+curr_path = os.path.dirname(__file__)
+idx = curr_path.find(ROOT_DIR_NAME) + len(ROOT_DIR_NAME)
+ROOT_PATH = curr_path[:idx]
+LIB_PATH = os.path.join(ROOT_PATH, "lib")
+if LIB_PATH != sys.path[0]:
+    print("inserting to the path")
+    sys.path.insert(0, LIB_PATH)
 import pymssql
 
 
