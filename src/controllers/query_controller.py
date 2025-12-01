@@ -69,6 +69,9 @@ class QueryController(ControllerInterface):
             if result == 500:
                 return UIResponse(success=False, message="Database error occurred")
 
+            if not result:
+                return UIResponse(success=False, message=f"Failed to execute {action}")
+
             return UIResponse(success=True, data=result, message=f"Successfully executed {action}")
 
         except Exception as e:

@@ -3,7 +3,7 @@ Search Screen: Custom SQL Query Builder
 """
 
 from textual.app import ComposeResult
-from textual.containers import Container, Horizontal, Vertical
+from textual.containers import Container, Vertical
 from textual.screen import Screen
 from textual.widgets import (
     Button,
@@ -14,7 +14,6 @@ from textual.widgets import (
     Label,
     Select,
     SelectionList,
-    Static,
 )
 from textual.widgets.selection_list import Selection
 
@@ -296,9 +295,7 @@ class SearchScreen(Screen):
         if table_name in DB_SCHEMA:
             columns = DB_SCHEMA[table_name]
             # Select all by default or let user choose? Let's select all by default for convenience
-            selections = [
-                Selection(col, col, initial_state=True) for col in columns
-            ]
+            selections = [Selection(col, col, initial_state=True) for col in columns]
             column_list.add_options(selections)
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
@@ -311,7 +308,7 @@ class SearchScreen(Screen):
         table_select = self.query_one("#table-select", Select)
         column_list = self.query_one("#column-select", SelectionList)
         where_input = self.query_one("#where-input", Input)
-        table = self.query_one("#results-table", DataTable)
+        self.query_one("#results-table", DataTable)
 
         # Validation
         if table_select.value == Select.BLANK:
@@ -324,7 +321,7 @@ class SearchScreen(Screen):
             return
 
         where_clause = where_input.value.strip()
-        
+
         # Security Check (Basic Sanitization)
         if not self._is_safe_query(where_clause):
             self.notify("Unsafe query detected! Restricted keywords found.", severity="error")
@@ -333,13 +330,13 @@ class SearchScreen(Screen):
         # Construct Query
         cols_str = ", ".join(selected_columns)
         query = f"SELECT DISTINCT {cols_str} FROM {table_select.value}"
-        
+
         if where_clause:
             query += f" WHERE {where_clause}"
 
         # Execute
         self.notify(f"Executing: {query}", severity="information")
-        
+
         request = UIRequest(action="custom", payload={"query": query})
         response = self.app.controller.handle_request(request)
 
@@ -354,7 +351,7 @@ class SearchScreen(Screen):
         """
         if not where_clause:
             return True
-            
+
         dangerous_keywords = [
             ";",
             "DROP",
@@ -368,7 +365,7 @@ class SearchScreen(Screen):
             "--",
             "/*",
         ]
-        
+
         upper_clause = where_clause.upper()
         for keyword in dangerous_keywords:
             if keyword in upper_clause:
@@ -397,6 +394,6 @@ class SearchScreen(Screen):
             # Ensure order matches selected columns
             row_data = [str(row.get(col, "")) for col in columns]
             rows.append(row_data)
-        
+
         table.add_rows(rows)
         self.notify(f"Loaded {len(rows)} rows.", severity="information")
