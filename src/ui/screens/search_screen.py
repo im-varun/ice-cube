@@ -322,11 +322,6 @@ class SearchScreen(Screen):
 
         where_clause = where_input.value.strip()
 
-        # Security Check (Basic Sanitization)
-        if not self._is_safe_query(where_clause):
-            self.notify("Unsafe query detected! Restricted keywords found.", severity="error")
-            return
-
         # Construct Query
         cols_str = ", ".join(selected_columns)
         query = f"SELECT DISTINCT {cols_str} FROM {table_select.value}"
@@ -344,33 +339,6 @@ class SearchScreen(Screen):
             self._display_results(response.data, selected_columns)
         else:
             self.notify(f"Query failed: {response.message}", severity="error")
-
-    def _is_safe_query(self, where_clause: str) -> bool:
-        """
-        Check for potentially dangerous SQL keywords.
-        """
-        if not where_clause:
-            return True
-
-        dangerous_keywords = [
-            ";",
-            "DROP",
-            "DELETE",
-            "UPDATE",
-            "INSERT",
-            "ALTER",
-            "TRUNCATE",
-            "EXEC",
-            "UNION",
-            "--",
-            "/*",
-        ]
-
-        upper_clause = where_clause.upper()
-        for keyword in dangerous_keywords:
-            if keyword in upper_clause:
-                return False
-        return True
 
     def _display_results(self, data: list[dict] | int, columns: list[str]) -> None:
         """Populate the DataTable with results."""
