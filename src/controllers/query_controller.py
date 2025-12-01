@@ -2,6 +2,7 @@
 from typing import Any
 
 from controllers import data_formatter
+from controllers.payload_firewall import PayloadFirewall
 from database.query_engine import QueryEngine
 from query_registry import Query
 from ui.interfaces import ControllerInterface, UIRequest, UIResponse
@@ -18,6 +19,7 @@ def debug(data):
 class QueryController(ControllerInterface):
     def __init__(self, query_engine: QueryEngine):
         self.query_engine = query_engine
+        self.firewall = PayloadFirewall()
 
     def handle_request(self, request: UIRequest) -> UIResponse:
         """
@@ -31,6 +33,10 @@ class QueryController(ControllerInterface):
         """
         action = request.action
         payload = request.payload or {}
+
+        # Verify payload using firewall
+        if not self.firewall.verify_payload(payload):
+            return UIResponse(success=False, message="SQL injection detected")
 
         try:
             # Route to appropriate query method based on action
