@@ -50,7 +50,7 @@ class QueryController(ControllerInterface):
                 result = self._handle_home_rink_advantage()
             elif action == Query.BIRTHDAY_CURSE.value.id:
                 result = self._handle_birthday_curse()
-            elif action == Query.MOST_PENALIZED_TEAMS.value.id:
+            elif action == Query.MOST_PENALIZED_PLAYERS.value.id:
                 result = self._handle_most_penalized()
             elif action == Query.PLAY_TYPES.value.id:
                 result = self._handle_common_play_types()

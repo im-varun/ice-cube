@@ -78,10 +78,10 @@ class Query(Enum):
         payload_labels=["penalty threshold", "minimum goals", "max results"],
     )
 
-    MOST_PENALIZED_TEAMS = QueryInfo(
+    MOST_PENALIZED_PLAYERS = QueryInfo(
         id="penalized_teams",
-        title="Most Penalized Teams",
-        description="Teams with highest total penalty minutes per season",
+        title="Most Penalized Players",
+        description="Players with highest total penalty minutes per season",
         needs_payload=False,
         payload_labels=None,
     )

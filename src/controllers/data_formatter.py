@@ -28,17 +28,12 @@ def format_date(date_str: str | None) -> str:
     """
     if not date_str:
         return ""
-
     try:
-        # Handle various date formats
-        if isinstance(date_str, str):
-            # Try parsing YYYY-MM-DD format
-            date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+        for fmt in ["%Y-%m-%d", "%Y/%m/%d", "%m/%d/%Y"]:  # Multiple formats
+            date_obj = datetime.strptime(str(date_str), fmt)
             return date_obj.strftime("%B %d, %Y")
     except (ValueError, TypeError):
-        # Return original if parsing fails
-        return str(date_str)
-
+        pass
     return str(date_str)
 
 
@@ -54,18 +49,41 @@ def format_datetime(datetime_str: str | None) -> str:
     """
     if not datetime_str:
         return ""
-
     try:
-        # Handle string datetime
-        if isinstance(datetime_str, str):
-            # Try parsing YYYY-MM-DD HH:MM:SS format
-            dt_obj = datetime.strptime(datetime_str, "%Y-%m-%d %H:%M:%S")
+        for fmt in ["%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M"]:  # Multiple formats
+            dt_obj = datetime.strptime(str(datetime_str), fmt)
             return dt_obj.strftime("%B %d, %Y at %I:%M %p")
     except (ValueError, TypeError):
-        # Return original if parsing fails
-        return str(datetime_str)
-
+        pass
     return str(datetime_str)
+
+
+def format_time(time_str: str | None) -> str:
+    """
+    Convert time string to readable format.
+
+    Args:
+        time_str: Time string in formats like "HH:MM:SS", "HH:MM", or "HHMMSS"
+
+    Returns:
+        Formatted time string like "HH:MM AM/PM" or original if parsing fails
+    """
+    if not time_str:
+        return ""
+
+    try:
+        if isinstance(time_str, str):
+            # Try common time formats
+            for fmt in ["%H:%M:%S", "%H:%M", "%H%M%S"]:
+                try:
+                    time_obj = datetime.strptime(str(time_str), fmt)
+                    return time_obj.strftime("%I:%M %p")
+                except ValueError:
+                    continue
+    except (ValueError, TypeError):
+        pass
+
+    return str(time_str)
 
 
 def format_game_id(game_id: int | None) -> str:
@@ -102,16 +120,16 @@ def format_game_id(game_id: int | None) -> str:
 
 def format_duration(seconds: int | float | None) -> str:
     """
-    Convert seconds to readable time format.
+    Convert seconds to readable time format in words.
 
     Args:
         seconds: Duration in seconds
 
     Returns:
-        Formatted duration string like "HH:MM:SS" or "MM:SS"
+        Formatted duration string like "2 hrs 46 mins 40 secs" or "46 mins 40 secs"
     """
     if seconds is None:
-        return "0:00"
+        return "0 mins"
 
     try:
         total_seconds = int(seconds)
@@ -119,10 +137,15 @@ def format_duration(seconds: int | float | None) -> str:
         minutes = (total_seconds % 3600) // 60
         secs = total_seconds % 60
 
+        parts = []
         if hours > 0:
-            return f"{hours}:{minutes:02d}:{secs:02d}"
-        else:
-            return f"{minutes}:{secs:02d}"
+            parts.append(f"{hours} hrs")
+        if minutes > 0:
+            parts.append(f"{minutes} mins")
+        if secs > 0 or not parts:  # Show secs if no other parts, or always show secs
+            parts.append(f"{secs} secs")
+
+        return " ".join(parts)
     except (ValueError, TypeError):
         return str(seconds)
 
@@ -201,7 +224,7 @@ def format_revenge_game_effect(result: list[dict[str, Any]] | int) -> list[dict[
         return [{"Error": "No data available"}]
 
     # Transpose single result
-    formatted = transpose_single_result(result[0])
+    formatted = result
 
     # Remove underscores from column names
     return [{format_column_name(k): v for k, v in row.items()} for row in formatted]
@@ -222,7 +245,8 @@ def format_home_rink_advantage(result: list[dict[str, Any]] | int) -> list[dict[
     if "avg_faceoff_pct" in data and data["avg_faceoff_pct"] is not None:
         data["avg_faceoff_pct"] = f"{data['avg_faceoff_pct']:.1f}%"
 
-    formatted = transpose_single_result(data)
+    # formatted = transpose_single_result(data)
+    formatted = result
 
     # Remove underscores from column names
     return [{format_column_name(k): v for k, v in row.items()} for row in formatted]
@@ -237,16 +261,14 @@ def format_birthday_curse(result: list[dict[str, Any]] | int) -> list[dict[str, 
     if isinstance(result, int) or not result:
         return [{"Error": "No data available"}]
 
-    data = result[0].copy()
-
-    # Format dates
-    if "birthDate" in data:
-        data["Birth Date"] = format_date(data.pop("birthDate"))
-
-    if "game_date" in data:
-        data["Game Date"] = format_datetime(data.pop("game_date"))
-
-    formatted = transpose_single_result(data)
+    formatted = []
+    for row in result:
+        data = row.copy()  # copy to modify safely
+        if "birthDate" in data:
+            data["Birth Date"] = format_date(data.pop("birthDate"))
+        if "game_date" in data:
+            data["Game Date"] = format_datetime(data.pop("game_date"))
+        formatted.append(data)
 
     # Remove underscores from column names
     return [{format_column_name(k): v for k, v in row.items()} for row in formatted]
