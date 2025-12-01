@@ -563,28 +563,41 @@ class QueryEngine:
         try:
             query = """
             WITH penalty_prone_players AS (
-                SELECT player_id
-                FROM game_penalties
-                GROUP BY player_id
+                SELECT gpp.player_id
+                FROM game_penalties gp
+                JOIN game_plays_players gpp ON gp.play_id = gpp.play_id
+                WHERE gpp.playerType IN ('PenaltyOn', 'DrewBy')
+                GROUP BY gpp.player_id
                 HAVING COUNT(*) > %d
+            ),
+            goal_scorers AS (
+                SELECT
+                    gpp.player_id,
+                    gg.game_goal_id,
+                    gp.game_id,
+                    gg.strength,
+                    gg.emptyNet
+                FROM game_goals gg
+                JOIN game_plays gp ON gg.play_id = gp.play_id
+                JOIN game_plays_players gpp ON gg.play_id = gpp.play_id
+                WHERE gpp.playerType IN ('Scorer', 'Assist')
             )
             SELECT TOP %d
                 p.player_id,
                 p.firstName,
                 p.lastName,
                 p.primaryPosition,
-                COUNT(DISTINCT gg.game_id) AS games_with_goals,
-                SUM(CASE WHEN gg.strength = 'EVEN' THEN 1 ELSE 0 END) AS
-                even_strength_goals,
-                SUM(CASE WHEN gg.strength = 'PPG' THEN 1 ELSE 0 END) AS power_play_goals,
+                COUNT(DISTINCT gs.game_id) AS games_with_goals,
+                SUM(CASE WHEN gs.strength = 'EVEN' THEN 1 ELSE 0 END) AS even_strength_goals,
+                SUM(CASE WHEN gs.strength = 'PPG' THEN 1 ELSE 0 END) AS power_play_goals,
                 COUNT(*) AS total_goals
-            FROM game_goals gg
-            JOIN player_info p ON gg.player_id = p.player_id
-            WHERE gg.player_id NOT IN (SELECT player_id FROM penalty_prone_players)
+            FROM goal_scorers gs
+            JOIN player_info p ON gs.player_id = p.player_id
+            WHERE gs.player_id NOT IN (SELECT player_id FROM penalty_prone_players)
                 AND p.primaryPosition IN ('C', 'LW', 'RW', 'D')
             GROUP BY p.player_id, p.firstName, p.lastName, p.primaryPosition
             HAVING COUNT(*) >= %d
-            ORDER BY total_goals DESC
+            ORDER BY total_goals DESC;
             """
             self._cursor.execute(query, (penalty_threshold, limit_rows, minimum_goals))
 
@@ -613,8 +626,10 @@ class QueryEngine:
         try:
             query = """
             WITH goal_scorers AS (
-                SELECT DISTINCT player_id
-                FROM game_goals
+                SELECT DISTINCT gpp.player_id
+                FROM game_goals gg
+                JOIN game_plays_players gpp ON gg.play_id = gpp.play_id
+                WHERE gpp.playerType = 'Scorer'
             ),
             assist_providers AS (
                 SELECT DISTINCT player_id
@@ -626,19 +641,21 @@ class QueryEngine:
                 p.firstName,
                 p.lastName,
                 p.primaryPosition,
-                COUNT(DISTINCT gg.game_id) AS games_played,
+                COUNT(DISTINCT gp.game_id) AS games_played,
                 COUNT(*) AS total_goals,
-                SUM(CASE WHEN gg.strength = 'EVEN' THEN 1 ELSE 0 END) AS
-                even_strength_goals,
+                SUM(CASE WHEN gg.strength = 'EVEN' THEN 1 ELSE 0 END) AS even_strength_goals,
                 SUM(CASE WHEN gg.strength = 'PPG' THEN 1 ELSE 0 END) AS power_play_goals,
-                SUM(CASE WHEN gg.emptyNet = 1 THEN 1 ELSE 0 END) AS empty_net_goals
+                SUM(CASE WHEN gg.emptyNet = 'TRUE' THEN 1 ELSE 0 END) AS empty_net_goals
             FROM game_goals gg
-            JOIN player_info p ON gg.player_id = p.player_id
-            WHERE gg.player_id IN (SELECT player_id FROM goal_scorers)
-                AND gg.player_id NOT IN (SELECT player_id FROM assist_providers)
+            JOIN game_plays gp ON gg.play_id = gp.play_id
+            JOIN game_plays_players gpp ON gg.play_id = gpp.play_id
+            JOIN player_info p ON gpp.player_id = p.player_id
+            WHERE gpp.playerType = 'Scorer'
+                AND gpp.player_id IN (SELECT player_id FROM goal_scorers)
+                AND gpp.player_id NOT IN (SELECT player_id FROM assist_providers)
             GROUP BY p.player_id, p.firstName, p.lastName, p.primaryPosition
             HAVING COUNT(*) >= %d
-            ORDER BY total_goals DESC
+            ORDER BY total_goals DESC;
             """
             self._cursor.execute(query, (limit_rows, minimum_goals))
 
