@@ -9,6 +9,7 @@ sys.path.insert(0, os.path.join(ROOT_PATH, "lib"))
 
 from textual.app import App
 from textual.binding import Binding
+from dotenv import load_dotenv
 
 from controllers.query_controller import QueryController
 from database.query_engine import QueryEngine
@@ -69,8 +70,6 @@ class IceCubeApp(App):
 
 def main():
     """Entry point for the application"""
-    # Load environment variables
-    from dotenv import load_dotenv
 
     load_dotenv()
 

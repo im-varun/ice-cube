@@ -1,243 +1,402 @@
 """
-Search Screen: used for table lookups from all the tables
-Uses QueryController to execute custom SQL queries
+Search Screen: Custom SQL Query Builder
 """
 
 from textual.app import ComposeResult
-from textual.binding import Binding
-from textual.containers import Grid, Vertical, VerticalScroll
+from textual.containers import Container, Horizontal, Vertical
 from textual.screen import Screen
 from textual.widgets import (
     Button,
+    DataTable,
     Footer,
     Header,
     Input,
+    Label,
     Select,
+    SelectionList,
     Static,
-    TextArea,
 )
+from textual.widgets.selection_list import Selection
 
 from ui.interfaces import UIRequest
 
+# schema based on sql/schema.sql
+DB_SCHEMA = {
+    "game": [
+        "game_id",
+        "season",
+        "type",
+        "date_time_GMT",
+        "away_team_id",
+        "home_team_id",
+        "away_goals",
+        "home_goals",
+        "outcome",
+        "home_rink_side_start",
+        "venue",
+    ],
+    "game_goalie_stats": [
+        "game_id",
+        "player_id",
+        "team_id",
+        "timeOnIce",
+        "assists",
+        "goals",
+        "pim",
+        "shots",
+        "saves",
+        "powerPlaySaves",
+        "shortHandedSaves",
+        "evenSaves",
+        "shortHandedShotsAgainst",
+        "evenShotsAgainst",
+        "powerPlayShotsAgainst",
+        "decision",
+        "savePercentage",
+        "powerPlaySavePercentage",
+        "evenStrengthSavePercentage",
+    ],
+    "game_goals": [
+        "game_goal_id",
+        "play_id",
+        "strength",
+        "gameWinningGoal",
+        "emptyNet",
+    ],
+    "game_officials": [
+        "game_id",
+        "official_name",
+        "official_type",
+    ],
+    "game_penalties": [
+        "play_id",
+        "penaltySeverity",
+        "penaltyMinutes",
+    ],
+    "game_plays": [
+        "play_id",
+        "game_id",
+        "team_id_for",
+        "team_id_against",
+        "event",
+        "secondaryType",
+        "x",
+        "y",
+        "period",
+        "periodType",
+        "periodTime",
+        "periodTimeRemaining",
+        "dateTime",
+        "goals_away",
+        "goals_home",
+        "description",
+        "st_x",
+        "st_y",
+    ],
+    "game_plays_players": [
+        "play_id",
+        "game_id",
+        "player_id",
+        "playerType",
+    ],
+    "game_scratches": [
+        "game_id",
+        "team_id",
+        "player_id",
+    ],
+    "game_shifts": [
+        "game_id",
+        "player_id",
+        "period",
+        "shift_start",
+        "shift_end",
+    ],
+    "game_skater_stats": [
+        "game_id",
+        "player_id",
+        "team_id",
+        "timeOnIce",
+        "assists",
+        "goals",
+        "shots",
+        "hits",
+        "powerPlayGoals",
+        "powerPlayAssists",
+        "penaltyMinutes",
+        "faceOffWins",
+        "faceoffTaken",
+        "takeaways",
+        "giveaways",
+        "shortHandedGoals",
+        "shortHandedAssists",
+        "blocked",
+        "plusMinus",
+        "evenTimeOnIce",
+        "shortHandedTimeOnIce",
+        "powerPlayTimeOnIce",
+    ],
+    "game_teams_stats": [
+        "game_id",
+        "team_id",
+        "HoA",
+        "won",
+        "settled_in",
+        "head_coach",
+        "goals",
+        "shots",
+        "hits",
+        "pim",
+        "powerPlayOpportunities",
+        "powerPlayGoals",
+        "faceOffWinPercentage",
+        "giveaways",
+        "takeaways",
+        "blocked",
+        "startRinkSide",
+    ],
+    "player_info": [
+        "player_id",
+        "firstName",
+        "lastName",
+        "nationality",
+        "birthCity",
+        "primaryPosition",
+        "birthDate",
+        "birthStateProvince",
+        "height",
+        "weight",
+        "shootsCatches",
+    ],
+    "team_info": [
+        "team_id",
+        "shortName",
+        "teamName",
+        "abbreviation",
+    ],
+}
+
 
 class SearchScreen(Screen):
-    """SQL Query Runner Screen with QueryController integration"""
+    """Screen for building custom SQL queries safely."""
 
     CSS = """
-    QueryScreen {
-        align: center middle;
+    SearchScreen {
+        background: #050a15;
     }
 
-    .content-area {
-        width: 90%;
-        height: 90%;
-        border: solid $accent;
+    .control-panel {
+        height: auto;
+        background: #0d2847;
+        border: tall #00d4ff;
         padding: 1 2;
-        background: $surface;
-        overflow: hidden;
+        margin: 1 2;
     }
 
-    .content-title {
-        text-align: center;
-        text-style: bold;
-        margin-bottom: 1;
-    }
-
-    .input-section, .results-section {
+    .input-group {
         height: auto;
         margin-bottom: 1;
     }
 
-    .label {
-        margin: 1 0;
+    Label {
+        color: #00ffff;
+        margin-bottom: 1;
     }
 
-    .full-width {
+    Select {
         width: 100%;
     }
 
-    #columns-grid {
-        layout: grid;
-        grid-size: 4;
-        grid-gutter: 1;
-        height: auto;
-        margin: 1 0;
+    SelectionList {
+        height: 10;
+        border: solid #1e4d7a;
+        background: #0a1525;
+        scrollbar-color: #00d4ff #0a1525;
     }
 
-    .column-btn {
+    Input {
+        border: solid #1e4d7a;
+        background: #0a1525;
+        color: #ffffff;
+    }
+
+    Input:focus {
+        border: solid #00ffff;
+    }
+
+    .search-btn {
         width: 100%;
-        border: solid $primary-background;
-        height: 3;
-        padding: 0;
-    }
-
-    .column-btn.selected {
-        background: $accent;
-        color: $text;
-        border: solid $accent-lighten-2;
-        text-style: bold;
-        height: 3;
-    }
-
-    .bordered-input, .bordered-btn {
-        border: solid $primary;
-        width: 100%;
+        background: #1e3a5f;
+        color: #00ffff;
+        border: solid #00d4ff;
         margin-top: 1;
+    }
+
+    .search-btn:hover {
+        background: #00d4ff;
+        color: #0a0f1c;
+        text-style: bold;
+    }
+
+    .results-container {
+        height: 1fr;
+        border: solid #1a3050;
+        margin: 0 2 1 2;
+        background: #0a1525;
+    }
+
+    DataTable {
+        height: 100%;
+        scrollbar-color: #00d4ff #0a1525;
     }
     """
 
-    BINDINGS = [
-        Binding("ctrl+e", "execute_query", "Execute", show=True),
-        Binding("ctrl+z", "clear_query", "Clear", show=True),
-        Binding("escape", "back", "Back", show=True),
-    ]
-
-    TABLES = [
-        ("Players", "players"),
-        ("Teams", "teams"),
-        ("Games", "games"),
-        ("Stats", "stats"),
-    ]
-
-    COLUMNS = [
-        ("ID", "id"),
-        ("Name", "name"),
-        ("Team ID", "team_id"),
-        ("Score", "score"),
-        ("Date", "date"),
-        ("Position", "position"),
-        ("Age", "age"),
-        ("Height", "height"),
-        ("Weight", "weight"),
-        ("Country", "country"),
-        ("Jersey", "jersey_number"),
-        ("Active", "is_active"),
-    ]
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
     def compose(self) -> ComposeResult:
-        yield Header(show_clock=True)
+        yield Header()
 
-        with VerticalScroll(classes="content-area"):
-            yield Static("SQL Query Runner", classes="content-title")
-
-            with Vertical(classes="input-section"):
-                yield Static("Build your Query", classes="highlight-magenta")
-
-                yield Static("Select Table:", classes="label")
+        with Container(classes="control-panel"):
+            # Table Selection
+            with Vertical(classes="input-group"):
+                yield Label("Select Table:")
                 yield Select(
-                    self.TABLES, prompt="Choose a table...", id="table-select", classes="full-width"
+                    [(table, table) for table in DB_SCHEMA.keys()],
+                    prompt="Choose a table...",
+                    id="table-select",
                 )
 
-                yield Static("Select Columns:", classes="label")
-                with Grid(id="columns-grid"):
-                    for name, val in self.COLUMNS:
-                        btn = Button(name, id=f"col-{val}", classes="column-btn")
-                        btn.column_value = val
-                        yield btn
+            # Column Selection (Initially hidden or empty)
+            with Vertical(classes="input-group"):
+                yield Label("Select Columns:")
+                yield SelectionList(id="column-select")
 
-                yield Static("Where Condition (Optional):", classes="label")
+            # WHERE Clause
+            with Vertical(classes="input-group"):
+                yield Label("WHERE Clause (Optional):")
                 yield Input(
-                    placeholder="e.g., team_id = 1",
-                    id="constraint-input",
-                    classes="bordered-input full-width",
+                    placeholder="e.g. nationality = 'CAN' AND height > '6-00'", id="where-input"
                 )
 
-                yield Button(
-                    "Execute Query", variant="success", id="execute-btn", classes="bordered-btn"
-                )
+            yield Button("Search", id="btn-search", classes="search-btn")
 
-            with Vertical(classes="results-section"):
-                yield Static("Results", classes="content-title")
-                results_area = TextArea(
-                    "Query results will be displayed here.", id="results-output", read_only=True
-                )
-                results_area.styles.height = "1fr"
-                results_area.styles.border = ("solid", "green")
-                yield results_area
+        with Container(classes="results-container"):
+            yield DataTable(id="results-table", zebra_stripes=True)
 
         yield Footer()
 
+    def on_select_changed(self, event: Select.Changed) -> None:
+        """Handle table selection change."""
+        if event.select.id == "table-select":
+            table_name = str(event.value)
+            self._update_columns(table_name)
+
+    def _update_columns(self, table_name: str) -> None:
+        """Update the column selection list based on the selected table."""
+        column_list = self.query_one("#column-select", SelectionList)
+        column_list.clear_options()
+
+        if table_name in DB_SCHEMA:
+            columns = DB_SCHEMA[table_name]
+            # Select all by default or let user choose? Let's select all by default for convenience
+            selections = [
+                Selection(col, col, initial_state=True) for col in columns
+            ]
+            column_list.add_options(selections)
+
     def on_button_pressed(self, event: Button.Pressed) -> None:
-        if event.button.id == "execute-btn":
-            self.action_execute_query()
-        elif "column-btn" in event.button.classes:
-            event.button.toggle_class("selected")
+        """Handle search button press."""
+        if event.button.id == "btn-search":
+            self._perform_search()
 
-    def action_execute_query(self) -> None:
+    def _perform_search(self) -> None:
+        """Construct and execute the query."""
         table_select = self.query_one("#table-select", Select)
-        constraint_input = self.query_one("#constraint-input", Input)
-        results_output = self.query_one("#results-output", TextArea)
+        column_list = self.query_one("#column-select", SelectionList)
+        where_input = self.query_one("#where-input", Input)
+        table = self.query_one("#results-table", DataTable)
 
-        selected_table = table_select.value
-        selected_columns = [
-            btn.column_value
-            for btn in self.query(Button)
-            if "column-btn" in btn.classes and "selected" in btn.classes
-        ]
-        constraint = constraint_input.value.strip()
-
-        if not selected_table:
-            results_output.text = "Error: Please select a table."
+        # Validation
+        if table_select.value == Select.BLANK:
+            self.notify("Please select a table.", severity="warning")
             return
+
+        selected_columns = column_list.selected
         if not selected_columns:
-            results_output.text = "Error: Please select at least one column."
+            self.notify("Please select at least one column.", severity="warning")
             return
 
-        query = f"SELECT {', '.join(selected_columns)} FROM {selected_table}"
-        if constraint:
-            query += f" WHERE {constraint}"
-        query += ";"
+        where_clause = where_input.value.strip()
+        
+        # Security Check (Basic Sanitization)
+        if not self._is_safe_query(where_clause):
+            self.notify("Unsafe query detected! Restricted keywords found.", severity="error")
+            return
 
-        # Execute query via controller if available
-        if hasattr(self.app, "controller") and self.app.controller:
-            request = UIRequest(action="execute_custom_query", payload={"query": query})
-            response = self.app.controller.handle_request(request)
+        # Construct Query
+        cols_str = ", ".join(selected_columns)
+        query = f"SELECT DISTINCT {cols_str} FROM {table_select.value}"
+        
+        if where_clause:
+            query += f" WHERE {where_clause}"
 
-            if response.success:
-                formatted_results = self._format_results(query, response.data)
-                results_output.text = formatted_results
-            else:
-                results_output.text = f"Error: {response.message}"
+        # Execute
+        self.notify(f"Executing: {query}", severity="information")
+        
+        request = UIRequest(action="custom", payload={"query": query})
+        response = self.app.controller.handle_request(request)
+
+        if response.success:
+            self._display_results(response.data, selected_columns)
         else:
-            results_output.text = f"Query built:\\n{query}\\n\\n[No controller available]"
+            self.notify(f"Query failed: {response.message}", severity="error")
 
-    def _format_results(self, query: str, data: list[dict]) -> str:
-        """Format query results for display"""
-        lines = [f"Executed query:\\n{query}\\n"]
-        lines.append("=" * 60)
+    def _is_safe_query(self, where_clause: str) -> bool:
+        """
+        Check for potentially dangerous SQL keywords.
+        """
+        if not where_clause:
+            return True
+            
+        dangerous_keywords = [
+            ";",
+            "DROP",
+            "DELETE",
+            "UPDATE",
+            "INSERT",
+            "ALTER",
+            "TRUNCATE",
+            "EXEC",
+            "UNION",
+            "--",
+            "/*",
+        ]
+        
+        upper_clause = where_clause.upper()
+        for keyword in dangerous_keywords:
+            if keyword in upper_clause:
+                return False
+        return True
+
+    def _display_results(self, data: list[dict] | int, columns: list[str]) -> None:
+        """Populate the DataTable with results."""
+        table = self.query_one("#results-table", DataTable)
+        table.clear(columns=True)
+
+        if isinstance(data, int):
+            self.notify("Database returned an error code.", severity="error")
+            return
 
         if not data:
-            lines.append("No results found.")
-            return "\\n".join(lines)
+            self.notify("No results found.", severity="warning")
+            return
 
-        # Headers
-        headers = list(data[0].keys())
-        header_line = " | ".join(headers)
-        lines.append(header_line)
-        lines.append("-" * len(header_line))
+        # Add columns
+        table.add_columns(*columns)
 
-        # Rows (limit to first 50 for display)
-        for row in data[:50]:
-            values = [str(row.get(h, "")) for h in headers]
-            lines.append(" | ".join(values))
-
-        if len(data) > 50:
-            lines.append(f"\\n... and {len(data) - 50} more rows")
-
-        lines.append(f"\\nTotal rows: {len(data)}")
-
-        return "\\n".join(lines)
-
-    def action_clear_query(self) -> None:
-        self.query_one("#table-select", Select).value = Select.BLANK
-        self.query_one("#constraint-input", Input).value = ""
-        for btn in self.query(Button):
-            if "column-btn" in btn.classes:
-                btn.remove_class("selected")
-        self.query_one("#results-output", TextArea).text = "Query results will be displayed here."
-
-    def action_back(self) -> None:
-        self.dismiss()
+        # Add rows
+        rows = []
+        for row in data:
+            # Ensure order matches selected columns
+            row_data = [str(row.get(col, "")) for col in columns]
+            rows.append(row_data)
+        
+        table.add_rows(rows)
+        self.notify(f"Loaded {len(rows)} rows.", severity="information")
