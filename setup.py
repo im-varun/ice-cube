@@ -1,21 +1,31 @@
 import os
 import sys
 
-import pymssql
+ROOT_DIR_NAME = "ice-cube"
+curr_path = os.path.dirname(__file__)
+idx = curr_path.find(ROOT_DIR_NAME) + len(ROOT_DIR_NAME)
+ROOT_PATH = curr_path[:idx]
+sys.path.insert(0, os.path.join(ROOT_PATH, "lib"))
 
-from utils import load_config
+import pymssql
+from dotenv import load_dotenv
 
 
 def setup_db() -> None:
     """
     Set up the database by dropping any existing tables and re-populating the data.
     """
-    db_config = load_config("./config/db.config")
 
-    server = db_config["db"]["server"]
-    database = db_config["db"]["database"]
-    user = db_config["db"]["user"]
-    password = db_config["db"]["password"]
+    load_dotenv()
+
+    server = os.getenv("DB_SERVER")
+    database = os.getenv("DB_NAME")
+    user = os.getenv("DB_USER")
+    password = os.getenv("DB_PASSWORD")
+
+    if not all([server, database, user, password]):
+        print("Warning: Database credentials not found in .env file")
+        exit(0)
 
     conn = pymssql.connect(server=server, user=user, password=password, database=database)
     cursor = conn.cursor()
@@ -40,7 +50,7 @@ def _drop(conn: pymssql.Connection, cursor: pymssql.Cursor) -> None:
         conn (pymssql.Connection): The database connection.
         cursor (pymssql.Cursor): The database cursor.
     """
-    drop_sql_file = "./sql/drop.sql"
+    drop_sql_file = os.path.join(ROOT_PATH, "sql/drop.sql")
 
     print("[INFO] Executing drop SQL script...")
     _execute_sql_file(conn, cursor, drop_sql_file)
@@ -55,8 +65,8 @@ def _populate(conn: pymssql.Connection, cursor: pymssql.Cursor) -> None:
         conn (pymssql.Connection): The database connection.
         cursor (pymssql.Cursor): The database cursor.
     """
-    schema_sql_file = "./sql/schema.sql"
-    populate_sql_file = "./sql/populate.sql"
+    schema_sql_file = os.path.join(ROOT_PATH, "sql/schema.sql")
+    populate_sql_file = os.path.join(ROOT_PATH, "sql/populate.sql")
 
     print("[INFO] Executing schema SQL script...")
     _execute_sql_file(conn, cursor, schema_sql_file)
@@ -129,9 +139,9 @@ def _execute_sql_file(
 
 def _check_paths() -> None:
     paths = {
-        "SQL Drop script": "./sql/drop.sql",
-        "SQL Schema script": "./sql/schema.sql",
-        "SQL Populate script": "./sql/populate.sql",
+        "SQL Drop script": os.path.join(ROOT_PATH, "sql/drop.sql"),
+        "SQL Schema script": os.path.join(ROOT_PATH, "sql/schema.sql"),
+        "SQL Populate script": os.path.join(ROOT_PATH, "sql/populate.sql"),
     }
 
     for name, path in paths.items():
