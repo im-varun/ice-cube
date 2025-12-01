@@ -163,4 +163,5 @@ class QueryController(ControllerInterface):
 
     def _handle_refresh_db(self) -> None | int:
         """Refresh the database"""
-        return self.query_engine.execute_refreshdb()
+        # return self.query_engine.execute_refreshdb()
+        return 1
