@@ -15,7 +15,7 @@ if LIB_PATH != sys.path[0]:
     sys.path.insert(0, LIB_PATH)
 
 from textual.app import ComposeResult
-from textual.containers import Container, Grid, Horizontal, Vertical
+from textual.containers import Container, Grid, Vertical
 from textual.screen import Screen
 from textual.widgets import Button, Footer, Header, Static
 

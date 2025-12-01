@@ -16,6 +16,41 @@ class QueryInfo:
 class Query(Enum):
     """Type-safe query identifiers for NHL analytics."""
 
+    HEAD_TO_HEAD = QueryInfo(
+        id="head_to_head",
+        title="Head to Head Duel",
+        description="""
+        Head-to-head performance stats between 2 players
+        Every fan have argued that their fav skater is the G.O.A.T (Greatest of All Time)
+        Lets keep aside personal sentiments and find it using data
+        Use the search option and look for player_info tables to find players to compete with
+        eg- Try competing
+        Ron Hainsey VS Bobby Ryan
+        """,
+        needs_payload=True,
+        payload_labels=["Player 1", "Player 2"],
+    )
+
+    LONE_WOLFS = QueryInfo(
+        id="score_not_assist",
+        title="Lone Wolfs",
+        description="""
+        This query finds hockey players who score goals but have zero assists,
+        highlighting pure finishers.
+        It focuses on players who contribute only by shooting, not by playmaking.\n
+        Parameters
+        Minimum goals: try with 5 goals,
+        but you can raise or lower it depending on how strict you want the filter to be.\n
+        Example Use Case
+        With minimum of 5 goals, Jesper Boqvist shows up with 6 goals and 0 assists
+        a rare type of player who finishes plays but never sets them up.
+        This can help coaches identify players who may need to improve passing skills
+        or help teams looking for a one-dimensional shooter.
+        """,
+        needs_payload=True,
+        payload_labels=["minimum goals", "max results"],
+    )
+
     TOP_SCORING_PLAYERS = QueryInfo(
         id="top_scoring",
         title="Top Scoring Players",
@@ -25,15 +60,19 @@ class Query(Enum):
 
         Parameters
         Penalty Threshold: The maximum number of penalties a player can have
-            eg- 30 means only players with fewer than 30 penalties are shown, helping filter for disciplined players.
+            eg- 30 means only players with fewer than 30 penalties are shown,
+            helping filter for disciplined players.
         Minimum Goals: The minimum number of goals a player must score to qualify.
             eg- 10 ensures the list focuses on players who are strong and consistent goal scorers.
 
         Result Interpretation
-        The query found 349 disciplined goal scorers who produce a lot of offense without taking too many penalties.
+        The query found 349 disciplined goal scorers who produce a lot of offense
+        without taking too many penalties.
         The top result is Leon Draisaitl, with 123 goals under the set penalty limit.
-        This helps identify clean offensive players, those who score often but don't hurt the team by sitting in the penalty box.
-        It's useful for contract evaluations, fantasy leagues, and coaches looking for productive yet disciplined players.
+        This helps identify clean offensive players, those who score often
+        but don't hurt the team by sitting in the penalty box.
+        It's useful for contract evaluations, fantasy leagues,
+        and coaches looking for productive yet disciplined players.
         """,
         needs_payload=True,
         payload_labels=["penalty threshold", "minimum goals", "max results"],
@@ -63,14 +102,6 @@ class Query(Enum):
         payload_labels=None,
     )
 
-    HEAD_TO_HEAD = QueryInfo(
-        id="head_to_head",
-        title="Head to Head Duel",
-        description="Head-to-head performance stats between selected players",
-        needs_payload=True,
-        payload_labels=["Player 1", "Player 2"],
-    )
-
     PLAY_TYPES = QueryInfo(
         id="play_types",
         title="Most Common Play Types",
@@ -82,7 +113,15 @@ class Query(Enum):
     REVENGE_GAME_EFFECT = QueryInfo(
         id="revenge_game_effect",
         title="Revenge Game Effect",
-        description="Performance analysis of players vs. former teams",
+        description="""
+        Tracks players facing their former teams and measures if they exhibit elevated performance
+        ("revenge game" phenomenon), showing goals, assists, and intensity metrics.
+
+        Use Case:
+        Broadcasters can highlight storylines for games.
+        Fantasy sports players can exploit this trend.
+        Team management can assess emotional factors in trades.
+        """,
         needs_payload=False,
         payload_labels=None,
     )
@@ -90,7 +129,15 @@ class Query(Enum):
     HOME_RINK_ADVANTAGE = QueryInfo(
         id="home_rink_advantage",
         title="Home Rink Advantage",
-        description="Team performance metrics by home vs. away venue",
+        description="""
+        Analyzes whether starting on a specific rink side (defending a particular end first)
+        correlates with winning, revealing potential psychological or strategic advantages.
+
+        Use Case:
+        Coaches can use this for strategic decisions during coin tosses.
+        Arena designers might consider sight-line advantages.
+        Betting analysts can factor this into predictions.
+        """,
         needs_payload=False,
         payload_labels=None,
     )
@@ -98,7 +145,16 @@ class Query(Enum):
     BIRTHDAY_CURSE = QueryInfo(
         id="birthday_curse",
         title="Birthday Curse Analysis",
-        description="Analysis of player performance on birthdays",
+        description="""
+        Identifies players who have played games on their birthday and analyzes their performance
+        to see if there's a birthday curse or birthday boost effect.
+
+        Use Case:
+        Sports psychologists and coaches can use this to understand
+        if playing on birthdays affects player performance.
+        Media outlets can create engaging birthday related stories.
+        Teams might consider this for lineup decisions.
+        """,
         needs_payload=False,
         payload_labels=None,
     )
@@ -117,25 +173,6 @@ class Query(Enum):
         description="Players with longest average time-on-ice per shift",
         needs_payload=False,
         payload_labels=None,
-    )
-
-    LONE_WOLFS = QueryInfo(
-        id="score_not_assist",
-        title="Lone Wolfs",
-        description="""
-        This query finds hockey players who score goals but have zero assists, highlighting pure finishers.
-        It focuses on players who contribute only by shooting, not by playmaking.\n
-        Parameters
-        Minimum goals: try with 5 goals,
-        but you can raise or lower it depending on how strict you want the filter to be.\n
-        Example Use Case
-        With minimum of 5 goals, Jesper Boqvist shows up with 6 goals and 0 assists
-        a rare type of player who finishes plays but never sets them up.
-        This can help coaches identify players who may need to improve passing skills 
-        or help teams looking for a one-dimensional shooter.
-        """,
-        needs_payload=True,
-        payload_labels=["minimum goals", "max results"],
     )
 
     @classmethod
