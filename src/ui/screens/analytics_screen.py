@@ -4,7 +4,7 @@ Displays real results from database via QueryController
 """
 
 from textual.app import ComposeResult
-from textual.containers import Horizontal, ScrollableContainer, Vertical
+from textual.containers import Container, Horizontal, ScrollableContainer, Vertical
 from textual.screen import Screen
 from textual.widgets import Button, DataTable, Footer, Header, Input, Static
 
@@ -16,6 +16,99 @@ from ..widgets.query_card import QueryCard
 
 class AnalyticsScreen(Screen):
     """Results screen with pre-defined queries using QueryController"""
+
+    CSS = """
+    AnalyticsScreen {
+        background: #050a15;
+    }
+
+    .sidebar {
+        width: 25%;
+        background: #0d2847;
+        border-right: tall #00d4ff;
+        height: 100%;
+        padding-right: 2;
+    }
+
+    .sidebar-title {
+        background: #1e3a5f;
+        color: #00ffff;
+        padding: 1;
+        text-align: center;
+        text-style: bold;
+    }
+
+    .content-area {
+        padding: 0 1;
+        height: 100%;
+    }
+
+    .content-title {
+        text-style: bold;
+        color: #00ffff;
+        margin-top: 1;
+        margin-bottom: 0;
+    }
+
+    .query-description {
+        color: #8899a6;
+        margin-bottom: 1;
+    }
+
+    .input-form {
+        height: auto;
+        layout: horizontal;
+        margin-bottom: 1;
+        border: solid #1e4d7a;
+        padding: 1;
+        background: #0a1525;
+    }
+
+    .input-group {
+        width: 1fr;
+        margin-right: 1;
+        height: auto;
+    }
+
+    .input-label {
+        color: #00d4ff;
+        margin-bottom: 0;
+    }
+
+    .param-input {
+        border: solid #1e4d7a;
+        background: #050a15;
+        color: #ffffff;
+    }
+
+    .param-input:focus {
+        border: solid #00ffff;
+    }
+
+    #submit-btn {
+        margin: 0;
+        background: #1e3a5f;
+        color: #00ffff;
+        border: solid #00d4ff;
+        width: 100%;
+    }
+
+    #submit-btn:hover {
+        background: #00d4ff;
+        color: #050a15;
+        text-style: bold;
+    }
+
+    #results-container {
+        height: 1fr;
+        border: solid #1a3050;
+        background: #0a1525;
+    }
+
+    DataTable {
+        scrollbar-color: #00d4ff #0a1525;
+    }
+    """
 
     def __init__(self, query_id: str = Query.PLAY_TYPES.value.id):
         super().__init__()
@@ -48,22 +141,24 @@ class AnalyticsScreen(Screen):
                 # Conditional content based on needs_payload
                 if self.query_info.needs_payload:
                     # Show input form
-                    with ScrollableContainer(id="input-form", classes="input-form"):
-                        yield Static("Enter Parameters:", classes="form-label")
-
+                    with Container(classes="input-form"):
                         # Create input fields based on payload_labels
                         for label in self.query_info.payload_labels:
-                            yield Static(f"{label}:", classes="input-label")
-                            yield Input(
-                                placeholder=f"Enter {label}",
-                                id=f"input-{label.replace(' ', '-')}",
-                                classes="param-input",
-                            )
+                            with Vertical(classes="input-group"):
+                                yield Static(f"{label}:", classes="input-label")
+                                yield Input(
+                                    placeholder=f"{label}",
+                                    id=f"input-{label.replace(' ', '-')}",
+                                    classes="param-input",
+                                )
 
-                        yield Button("Submit Query", id="submit-btn", variant="primary")
+                        # Submit Button
+                        with Vertical(classes="input-group"):
+                            yield Static("", classes="input-label")  # Spacer
+                            yield Button("Submit", id="submit-btn")
 
                 # Results table (always present, but may start hidden for payload queries)
-                with ScrollableContainer(id="results-container"):
+                with Container(id="results-container"):
                     yield DataTable(id="results-table")
 
         yield Footer()

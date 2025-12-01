@@ -38,57 +38,27 @@ class HomeScreen(Screen):
         height: auto;
         width: 100%;
         background: #0d2847;
-        border: tall #00d4ff;
-        padding: 3 4;
-        margin-bottom: 2;
+        border: solid #00d4ff;
+        padding: 3 5;
+    }
+
+    .hero-container:hover {
+        border: solid #00ffff;
+        background: #0f2e52;
     }
 
     .hero-title {
         color: #00ffff;
         text-style: bold;
         text-align: center;
-        margin-bottom: 1;
+        margin-bottom: 2;
+        text-opacity: 100%;
     }
 
     .hero-subtitle {
-        color: #6b9bd1;
-        text-align: center;
-        margin-bottom: 1;
-    }
-
-    .hero-season {
-        color: #00d4ff;
-        text-align: center;
-        text-style: bold italic;
-        background: #0f1f3a;
-        border: solid #1e4d7a;
-        padding: 1 2;
-        margin: 1 0;
-        width: auto;
-    }
-
-    /* ══════════════════════════════════════════════════════════
-       FEATURE BANNER
-       ══════════════════════════════════════════════════════════ */
-
-    .feature-banner {
-        height: auto;
-        background: #0a1525;
-        border: solid #1a3050;
-        padding: 2 3;
-        margin: 2 8;
-    }
-
-    .feature-text {
         color: #8bb4e8;
         text-align: center;
-        margin-bottom: 1;
-    }
-
-    .feature-highlight {
-        color: #00ffff;
-        text-style: bold;
-        text-align: center;
+        text-style: italic;
     }
 
     /* ══════════════════════════════════════════════════════════
@@ -98,13 +68,13 @@ class HomeScreen(Screen):
     .cards-container {
         width: 100%;
         height: auto;
-        padding: 3 8;
+        padding: 2 0;
     }
 
     .action-grid {
         layout: grid;
         grid-size: 2 1;
-        grid-gutter: 4 2;
+        grid-gutter: 5 3;
         height: auto;
         width: 100%;
     }
@@ -113,19 +83,19 @@ class HomeScreen(Screen):
         height: auto;
         min-height: 20;
         background: #0c1a2e;
-        border: heavy #1e3a5f;
+        border: solid #1e3a5f;
         padding: 3 3;
+        margin: 0;
     }
 
     .action-card:hover {
-        border: heavy #00ffff;
-        background: #162d4a;
+        border: solid #00ffff;
+        background: #1a3050;
     }
 
     .card-content {
         height: auto;
         width: 100%;
-        align: center middle;
     }
 
     .card-icon {
@@ -143,20 +113,9 @@ class HomeScreen(Screen):
     }
 
     .card-desc {
-        color: #7a9bc5;
+        color: #8bb4e8;
         text-align: center;
-        margin-bottom: 2;
-    }
-
-    .card-badge {
-        background: #00d4ff;
-        color: #0a0f1c;
-        padding: 1 2;
-        text-style: bold;
-        text-align: center;
-        border: solid #00ffff;
-        margin: 2 0;
-        width: auto;
+        margin-bottom: 3;
     }
 
     .card-button {
@@ -169,38 +128,7 @@ class HomeScreen(Screen):
 
     .card-button:hover {
         background: #00d4ff;
-        color: #0a0f1c;
-        text-style: bold;
-    }
-
-    .card-keyinfo {
-        color: #4a7ba7;
-        text-align: center;
-        margin-top: 1;
-        text-style: italic;
-    }
-
-    /* ══════════════════════════════════════════════════════════
-       STATS BAR
-       ══════════════════════════════════════════════════════════ */
-
-    .stats-bar {
-        layout: horizontal;
-        height: auto;
-        background: #08131f;
-        border: solid #1a2d45;
-        margin: 3 8 2 8;
-        padding: 2 2;
-    }
-
-    .stat-item {
-        width: 1fr;
-        text-align: center;
-        color: #6b9bd1;
-    }
-
-    .stat-value {
-        color: #00ffff;
+        color: #050a15;
         text-style: bold;
     }
 
@@ -213,9 +141,17 @@ class HomeScreen(Screen):
         color: #6b9bd1;
     }
 
+    Footer:hover {
+        color: #8bb4e8;
+    }
+
     Header {
         background: #0a1525;
         color: #00ffff;
+    }
+
+    Header:hover {
+        color: #00d4ff;
     }
     """
 
@@ -229,8 +165,8 @@ class HomeScreen(Screen):
         # HERO BANNER
         # ══════════════════════════════════════════════════════════
         with Container(classes="hero-container"):
-            yield Static("❄️  I C E C U B E  ❄️", classes="hero-title")
-            yield Static("A Crystalline Database Management System", classes="hero-subtitle")
+            yield Static("❄️  I C E   C U B E  ❄️", classes="hero-title")
+            yield Static("Slice through NHL data like a pro skater.", classes="hero-subtitle")
 
         # ══════════════════════════════════════════════════════════
         # ACTION CARDS WITH BUTTONS
@@ -240,34 +176,24 @@ class HomeScreen(Screen):
                 # CARD 1: Custom Query
                 with Container(classes="action-card"):
                     with Vertical(classes="card-content"):
-                        yield Static("⚙️  SQL", classes="card-icon")
-                        yield Static("Table Lookup", classes="card-title")
+                        yield Static("🏒  THE RINK", classes="card-icon")
+                        yield Static("Raw Data Lookup", classes="card-title")
                         yield Static(
-                            "Search the tables directly\nFlexible but boring than our queries",
+                            "Skate through the raw tables.\nBuild your own plays from scratch.",
                             classes="card-desc",
                         )
-                        yield Button("Launch Custom Query", id="btn-custom", classes="card-button")
+                        yield Button("Enter the Rink", id="btn-custom", classes="card-button")
 
                 # CARD 2: Pre-defined Queries
                 with Container(classes="action-card"):
                     with Vertical(classes="card-content"):
-                        yield Static("🎯  ANALYTICS", classes="card-icon")
-                        yield Static("Signature Queries", classes="card-title")
+                        yield Static("📋  THE PLAYBOOK", classes="card-icon")
+                        yield Static("Pro Analytics", classes="card-title")
                         yield Static(
-                            "12 expert-crafted analytics.\nInstant insights. Zero setup.",
+                            "Winning strategies and deep insights.\nNo coaching license required.",
                             classes="card-desc",
                         )
-                        yield Button(
-                            "Explore Signature Queries", id="btn-predefined", classes="card-button"
-                        )
-
-        # ══════════════════════════════════════════════════════════
-        # STATS BAR
-        # ══════════════════════════════════════════════════════════
-        with Horizontal(classes="stats-bar"):
-            yield Static("Database: [stat-value]Connected[/]", classes="stat-item", markup=True)
-            yield Static("Season: [stat-value]2019-2020[/]", classes="stat-item", markup=True)
-            yield Static("Queries: [stat-value]12 Available[/]", classes="stat-item", markup=True)
+                        yield Button("Open Playbook", id="btn-predefined", classes="card-button")
 
         yield Footer()
 
