@@ -288,13 +288,11 @@ class SearchScreen(Screen):
                 # WHERE Clause
                 with Vertical(classes="input-group", id="where-group"):
                     yield Label("WHERE Clause (Optional):")
-                    yield Input(
-                        placeholder="e.g. nationality = 'CAN'", id="where-input"
-                    )
+                    yield Input(placeholder="e.g. nationality = 'CAN'", id="where-input")
 
                 # Search Button
                 with Vertical(classes="input-group", id="btn-group"):
-                    yield Label("") # Spacer
+                    yield Label("")  # Spacer
                     yield Button("Search", id="btn-search", classes="search-btn")
 
             # Column Selection (Full width below top controls)
