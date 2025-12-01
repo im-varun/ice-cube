@@ -558,6 +558,17 @@ class Screen(Generic[ScreenResultType], Widget):
         """Check if this widget permits text selection."""
         return self.ALLOW_SELECT
 
+    def get_loading_widget(self) -> Widget:
+        """Get a widget to display a loading indicator.
+
+        The default implementation will defer to App.get_loading_widget.
+
+        Returns:
+            A widget in place of this widget to indicate a loading.
+        """
+        loading_widget = self.app.get_loading_widget()
+        return loading_widget
+
     def render(self) -> RenderableType:
         """Render method inherited from widget, used to render the screen's background.
 
@@ -719,7 +730,7 @@ class Screen(Generic[ScreenResultType], Widget):
         self._select_end = None
 
     def _select_all_in_widget(self, widget: Widget) -> None:
-        """Select a widget and all it's children.
+        """Select a widget and all its children.
 
         Args:
             widget: Widget to select.
@@ -1722,7 +1733,10 @@ class Screen(Generic[ScreenResultType], Widget):
             else:
                 if isinstance(event, events.MouseDown):
                     focusable_widget = self.get_focusable_widget_at(event.x, event.y)
-                    if focusable_widget:
+                    if (
+                        focusable_widget is not None
+                        and focusable_widget.focus_on_click()
+                    ):
                         self.set_focus(focusable_widget, scroll_visible=False)
                 event.style = self.get_style_at(event.screen_x, event.screen_y)
                 if widget.loading:
