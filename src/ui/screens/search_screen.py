@@ -187,18 +187,39 @@ class SearchScreen(Screen):
         height: auto;
         background: #0d2847;
         border: tall #00d4ff;
-        padding: 1 2;
-        margin: 1 2;
+        padding: 0 1;
+        margin: 0 1;
+        layout: vertical;
+    }
+
+    .top-controls {
+        height: auto;
+        layout: horizontal;
+        margin-bottom: 1;
+        width: 100%;
     }
 
     .input-group {
         height: auto;
-        margin-bottom: 1;
+        margin-right: 1;
+    }
+
+    #table-group {
+        width: 25%;
+    }
+
+    #where-group {
+        width: 59%;
+    }
+
+    #btn-group {
+        width: 15%;
+        align-vertical: bottom;
     }
 
     Label {
         color: #00ffff;
-        margin-bottom: 1;
+        margin-bottom: 0;
     }
 
     Select {
@@ -206,10 +227,11 @@ class SearchScreen(Screen):
     }
 
     SelectionList {
-        height: 10;
+        height: 8;
         border: solid #1e4d7a;
         background: #0a1525;
         scrollbar-color: #00d4ff #0a1525;
+        margin-bottom: 1;
     }
 
     Input {
@@ -227,7 +249,6 @@ class SearchScreen(Screen):
         background: #1e3a5f;
         color: #00ffff;
         border: solid #00d4ff;
-        margin-top: 1;
     }
 
     .search-btn:hover {
@@ -239,7 +260,7 @@ class SearchScreen(Screen):
     .results-container {
         height: 1fr;
         border: solid #1a3050;
-        margin: 0 2 1 2;
+        margin: 0 1 1 1;
         background: #0a1525;
     }
 
@@ -253,28 +274,33 @@ class SearchScreen(Screen):
         yield Header()
 
         with Container(classes="control-panel"):
-            # Table Selection
-            with Vertical(classes="input-group"):
-                yield Label("Select Table:")
-                yield Select(
-                    [(table, table) for table in DB_SCHEMA.keys()],
-                    prompt="Choose a table...",
-                    id="table-select",
-                )
+            # Top Controls: Table, WHERE, Search
+            with Container(classes="top-controls"):
+                # Table Selection
+                with Vertical(classes="input-group", id="table-group"):
+                    yield Label("Select Table:")
+                    yield Select(
+                        [(table, table) for table in DB_SCHEMA.keys()],
+                        prompt="Table...",
+                        id="table-select",
+                    )
 
-            # Column Selection (Initially hidden or empty)
+                # WHERE Clause
+                with Vertical(classes="input-group", id="where-group"):
+                    yield Label("WHERE Clause (Optional):")
+                    yield Input(
+                        placeholder="e.g. nationality = 'CAN'", id="where-input"
+                    )
+
+                # Search Button
+                with Vertical(classes="input-group", id="btn-group"):
+                    yield Label("") # Spacer
+                    yield Button("Search", id="btn-search", classes="search-btn")
+
+            # Column Selection (Full width below top controls)
             with Vertical(classes="input-group"):
                 yield Label("Select Columns:")
                 yield SelectionList(id="column-select")
-
-            # WHERE Clause
-            with Vertical(classes="input-group"):
-                yield Label("WHERE Clause (Optional):")
-                yield Input(
-                    placeholder="e.g. nationality = 'CAN' AND height > '6-00'", id="where-input"
-                )
-
-            yield Button("Search", id="btn-search", classes="search-btn")
 
         with Container(classes="results-container"):
             yield DataTable(id="results-table", zebra_stripes=True)
