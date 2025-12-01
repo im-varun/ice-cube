@@ -571,7 +571,7 @@ class QueryEngine:
                 HAVING COUNT(*) > %d
             ),
             goal_scorers AS (
-                SELECT 
+                SELECT
                     gpp.player_id,
                     gg.game_goal_id,
                     gp.game_id,
