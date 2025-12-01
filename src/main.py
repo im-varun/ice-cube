@@ -7,14 +7,14 @@ idx = curr_path.find(ROOT_DIR_NAME) + len(ROOT_DIR_NAME)
 ROOT_PATH = curr_path[:idx]
 sys.path.insert(0, os.path.join(ROOT_PATH, "lib"))
 
+from dotenv import load_dotenv
 from textual.app import App
 from textual.binding import Binding
-from dotenv import load_dotenv
 
 from controllers.query_controller import QueryController
 from database.query_engine import QueryEngine
-from ui.interfaces import ControllerInterface
-from ui.screens.home_screen import HomeScreen
+from ui.interfaces import ControllerInterface, UIRequest
+from ui.screens import AnalyticsScreen, HomeScreen, SearchScreen
 
 
 class IceCubeApp(App):
@@ -32,11 +32,15 @@ class IceCubeApp(App):
     CSS_PATH = ["./ui/styles/theme.tcss", "./ui/styles/components.tcss"]
 
     BINDINGS = [
-        Binding("ctrl+q", "quit", "Quit", show=True),
-        Binding("ctrl+h", "home", "Home", show=False),
+        Binding("q", "quit", "Quit", show=True),
+        Binding("h", "app.push_screen('home')", "Home", show=True),
+        Binding("s", "app.push_screen('search')", "Search", show=True),
+        Binding("a", "app.push_screen('analytics')", "Analytics", show=True),
+        Binding("r", "restart", "Restart", show=True),
     ]
 
-    MODES = {"home": HomeScreen}
+    # MODES = {"home": HomeScreen}
+    SCREENS = {"home": HomeScreen, "search": SearchScreen, "analytics": AnalyticsScreen}
 
     def __init__(self, controller: ControllerInterface):
         """
@@ -66,6 +70,13 @@ class IceCubeApp(App):
     def set_db_status(self, connected: bool) -> None:
         """Update database connection status"""
         self.db_connected = connected
+
+    def action_restart(self) -> None:
+        """An action to restart the application."""
+        request = UIRequest(action="refresh", payload={})
+        response = self.controller.handle_request(request).message
+        self.notify("Database Repopulated!")
+        self.notify(str(response))
 
 
 def main():

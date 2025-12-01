@@ -17,8 +17,6 @@ from ..widgets.query_card import QueryCard
 class AnalyticsScreen(Screen):
     """Results screen with pre-defined queries using QueryController"""
 
-    BINDINGS = [("escape", "dismiss", "Return"), ("ctrl+q", "quit", "Quit")]
-
     def __init__(self, query_id: str = Query.PLAY_TYPES.value.id):
         super().__init__()
         self.query_id = query_id
@@ -151,5 +149,4 @@ class AnalyticsScreen(Screen):
         """Switch to new result when a sidebar query is clicked"""
         self.app.push_screen(AnalyticsScreen(event.query_id))
 
-    def action_dismiss(self) -> None:
-        self.dismiss()
+    # def action_dismiss(self) -> None:
