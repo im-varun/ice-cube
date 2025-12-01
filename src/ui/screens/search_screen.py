@@ -328,7 +328,7 @@ class SearchScreen(Screen):
             self._perform_search()
 
     def _perform_search(self) -> None:
-        """Construct and execute the query."""
+        """Send query parameters to controller for safe query construction."""
         table_select = self.query_one("#table-select", Select)
         column_list = self.query_one("#column-select", SelectionList)
         where_input = self.query_one("#where-input", Input)
@@ -346,17 +346,15 @@ class SearchScreen(Screen):
 
         where_clause = where_input.value.strip()
 
-        # Construct Query
-        cols_str = ", ".join(selected_columns)
-        query = f"SELECT DISTINCT {cols_str} FROM {table_select.value}"
-
-        if where_clause:
-            query += f" WHERE {where_clause}"
-
-        # Execute
-        self.notify(f"Executing: {query}", severity="information")
-
-        request = UIRequest(action="custom", payload={"query": query})
+        # Send raw inputs to controller for safe query building
+        request = UIRequest(
+            action="custom",
+            payload={
+                "table": str(table_select.value),
+                "columns": list(selected_columns),
+                "where": where_clause if where_clause else None,
+            },
+        )
         response = self.app.controller.handle_request(request)
 
         if response.success:

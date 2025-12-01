@@ -193,9 +193,7 @@ class HomeScreen(Screen):
                             "Winning strategies and deep insights.\nNo coaching license required.",
                             classes="card-desc",
                         )
-                        yield Button(
-                            "Open Playbook", id="btn-predefined", classes="card-button"
-                        )
+                        yield Button("Open Playbook", id="btn-predefined", classes="card-button")
 
         yield Footer()
 

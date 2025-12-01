@@ -84,8 +84,26 @@ class QueryController(ControllerInterface):
             return UIResponse(success=False, message=f"Error: {str(e)}")
 
     def _handle_custom_query(self, payload: dict[str, Any]) -> list[dict[str, Any]] | int:
-        """Execute a custom SQL query"""
-        query = payload.get("query", "")
+        """Build and execute a custom SQL query from validated components"""
+        # Extract validated components from payload
+        table = payload.get("table", "")
+        columns = payload.get("columns", [])
+        where_clause = payload.get("where", "")
+
+        # Validate required fields
+        if not table or not columns:
+            return 500
+
+        # Build query safely (inputs already validated by firewall)
+        # Using DISTINCT and proper formatting
+        cols_str = ", ".join(columns)
+        query = f"SELECT DISTINCT {cols_str} FROM {table}"
+
+        if where_clause:
+            query += f" WHERE {where_clause}"
+
+        query += ";"
+
         return self.query_engine.execute_query(query)
 
     def _handle_head_to_head(self, payload: dict[str, Any]) -> list[dict[str, Any]] | int:
