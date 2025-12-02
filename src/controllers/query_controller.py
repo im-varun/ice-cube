@@ -184,8 +184,9 @@ class QueryController(ControllerInterface):
 
     def _handle_refresh_db(self) -> None | int:
         """Refresh the database"""
+        # TODO: Varun please update the below line once you are ready to test the repopulation
         # return self.query_engine.execute_refreshdb()
-        return 1
+        return "FINISH TODO in query_controller.py"
 
     def _to_pos_int(self, value: str | int | None, default: int) -> int:
         """Return value string as a positive int; else return default in all other case"""

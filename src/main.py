@@ -42,7 +42,7 @@ class IceCubeApp(App):
     # MODES = {"home": HomeScreen}
     SCREENS = {"home": HomeScreen, "search": SearchScreen, "analytics": AnalyticsScreen}
 
-    def __init__(self, controller: ControllerInterface):
+    def __init__(self, controller: ControllerInterface, refresh_duration: int = 1):
         """
         Initialize app with controller.
 
@@ -51,7 +51,7 @@ class IceCubeApp(App):
         """
         super().__init__()
         self.controller = controller
-        self.db_connected = True
+        self.refresh_duration = refresh_duration
 
     def _create_mock_controller(self):
         """Create mock controller for development without database"""
@@ -67,15 +67,14 @@ class IceCubeApp(App):
         """Navigate to home screen"""
         self.switch_screen(HomeScreen())
 
-    def set_db_status(self, connected: bool) -> None:
-        """Update database connection status"""
-        self.db_connected = connected
-
     def action_restart(self) -> None:
         """An action to restart the application."""
         request = UIRequest(action="refresh", payload={})
+        self.notify(f"Repopulating Database.\nQueries are locked for {self.refresh_duration} sec")
         response = self.controller.handle_request(request).message
         self.notify("Database Repopulated!")
+
+        # TODO: Varun please update the below message to a appropriate message
         self.notify(str(response))
 
 
@@ -88,6 +87,7 @@ def main():
     database = os.getenv("DB_NAME")
     user = os.getenv("DB_USER")
     password = os.getenv("DB_PASSWORD")
+    wait_time = int(os.getenv("DB_REPOPULATION_TIME"))
 
     if not all([server, database, user, password]):
         print("Warning: Database credentials not found in .env file")
@@ -95,7 +95,7 @@ def main():
 
     query_engine = QueryEngine(server, database, user, password)
     controller = QueryController(query_engine)
-    app = IceCubeApp(controller=controller)
+    app = IceCubeApp(controller=controller, refresh_duration=wait_time)
     app.run()
 
 
