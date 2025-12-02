@@ -20,12 +20,23 @@ class Query(Enum):
         id="head_to_head",
         title="Head to Head Duel",
         description="""
-        Head-to-head performance stats between 2 players
         Every fan have argued that their fav skater is the G.O.A.T (Greatest of All Time)
-        Lets keep aside personal sentiments and find it using data
+        Lets keep aside personal sentiments and find it using direct statistical battles in games
+        where both players participated, showing who dominated in goals, assists, hits
+        and ice time during their on-ice matchups.
+
+        Use Case:
+        Fans can settle debates about which player performed better in direct matchups
+        Fantasy league players can analyze player matchups for upcoming games.
+        Sports media can generate interesting rivalry content.
+
         Use the search option and look for player_info tables to find players to compete with
-        eg- Try competing
-        Ron Hainsey VS Bobby Ryan
+        Note: This query only gives meaningful results when comparing players
+        who have competed against each, so you may need to try out multiple players
+
+        Example: Try this working example
+        Player1: Ron Hainsey
+        Player2: Bobby Ryan
         """,
         needs_payload=True,
         payload_labels=["Player 1", "Player 2"],
@@ -130,7 +141,15 @@ class Query(Enum):
     LONGEST_AVG_SHIFT = QueryInfo(
         id="longest_avg_shift",
         title="Longest Average Shifts",
-        description="Players with longest average time-on-ice per shift",
+        description="""
+        Analyzes player shift data to identify which players stay on the ice longest per shift,
+        revealing the folks who do heavy ice time loads for their teams.
+
+        Use Case
+        Identifying players with exceptional endurance helps with roster management,
+        fatigue assessment, and understanding player utilization patterns.
+        Long shifts can indicate star players or potential over-reliance on certain individuals.
+        """,
         needs_payload=False,
         payload_labels=None,
     )

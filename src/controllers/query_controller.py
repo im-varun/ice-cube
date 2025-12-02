@@ -165,17 +165,19 @@ class QueryController(ControllerInterface):
 
     def _handle_top_scoring_players(self, payload: dict[str, Any]) -> list[dict[str, Any]] | int:
         """Get top scoring players with filters"""
+        debug(payload)
         result = self.query_engine.execute_topscoringplayers(
             penalty_threshold=payload.get("penalty_threshold", 10),
             minimum_goals=payload.get("minimum_goals", 5),
-            limit_rows=payload.get("limit_rows", 10),
+            limit_rows=payload.get("max_results", 10),
         )
         return data_formatter.format_top_scoring_players(result)
 
     def _handle_score_not_assist(self, payload: dict[str, Any]) -> list[dict[str, Any]] | int:
         """Get players who score but don't assist"""
+        debug(payload)
         result = self.query_engine.execute_playerswhoscorebutnotassist(
-            minimum_goals=payload.get("minimum_goals", 5), limit_rows=payload.get("limit_rows", 10)
+            minimum_goals=payload.get("minimum_goals", 5), limit_rows=payload.get("max_results", 10)
         )
         return data_formatter.format_score_not_assist(result)
 
