@@ -89,6 +89,7 @@ class QueryController(ControllerInterface):
         table = payload.get("table", "")
         columns = payload.get("columns", [])
         where_clause = payload.get("where", "")
+        limit = max(self._to_pos_int(payload.get("limit"), 1234), 1)
 
         # Validate required fields
         if not table or not columns:
@@ -97,7 +98,7 @@ class QueryController(ControllerInterface):
         # Build query safely (inputs already validated by firewall)
         # Using DISTINCT and proper formatting
         cols_str = ", ".join(columns)
-        query = f"SELECT DISTINCT TOP 3295 {cols_str} FROM {table}"
+        query = f"SELECT DISTINCT TOP {limit} {cols_str} FROM {table}"
 
         if where_clause:
             query += f" WHERE {where_clause}"
@@ -165,11 +166,10 @@ class QueryController(ControllerInterface):
 
     def _handle_top_scoring_players(self, payload: dict[str, Any]) -> list[dict[str, Any]] | int:
         """Get top scoring players with filters"""
-        debug(payload)
         result = self.query_engine.execute_topscoringplayers(
-            penalty_threshold=payload.get("penalty_threshold", 10),
-            minimum_goals=payload.get("minimum_goals", 5),
-            limit_rows=payload.get("max_results", 10),
+            penalty_threshold=self._to_pos_int(payload.get("penalty_threshold"), 10),
+            minimum_goals=self._to_pos_int(payload.get("minimum_goals"), 5),
+            limit_rows=self._to_pos_int(payload.get("max_results"), 20),
         )
         return data_formatter.format_top_scoring_players(result)
 
@@ -177,7 +177,8 @@ class QueryController(ControllerInterface):
         """Get players who score but don't assist"""
         debug(payload)
         result = self.query_engine.execute_playerswhoscorebutnotassist(
-            minimum_goals=payload.get("minimum_goals", 5), limit_rows=payload.get("max_results", 10)
+            minimum_goals=self._to_pos_int(payload.get("minimum_goals"), 3),
+            limit_rows=self._to_pos_int(payload.get("max_results"), 20),
         )
         return data_formatter.format_score_not_assist(result)
 
@@ -185,3 +186,10 @@ class QueryController(ControllerInterface):
         """Refresh the database"""
         # return self.query_engine.execute_refreshdb()
         return 1
+
+    def _to_pos_int(self, value: str | int | None, default: int) -> int:
+        """Return value string as a positive int; else return default in all other case"""
+        try:
+            return int(value) if value and int(value) >= 0 else default
+        except Exception:
+            return default

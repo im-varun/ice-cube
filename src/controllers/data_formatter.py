@@ -164,7 +164,7 @@ def transpose_single_result(
         List of dictionaries where each dict represents a row with 'Field' and 'Value' columns
     """
     if not data:
-        return [{"No Result": "No data available"}]
+        return [{"No Result": "No results found"}]
 
     result = []
     fields = field_names if field_names else data.keys()
@@ -224,7 +224,7 @@ def format_revenge_game_effect(result: list[dict[str, Any]] | int) -> list[dict[
     Returns transposed view with Field and Value columns.
     """
     if isinstance(result, int) or not result:
-        return [{"Error": "No data available"}]
+        return [{"Error": "No results found"}]
 
     # Transpose single result
     formatted = result
@@ -240,7 +240,7 @@ def format_home_rink_advantage(result: list[dict[str, Any]] | int) -> list[dict[
     Returns transposed view with Field and Value columns.
     """
     if isinstance(result, int) or not result:
-        return [{"Error": "No data available"}]
+        return [{"Error": "No results found"}]
 
     data = result[0].copy()
 
@@ -262,7 +262,7 @@ def format_birthday_curse(result: list[dict[str, Any]] | int) -> list[dict[str, 
     Returns transposed view with formatted dates.
     """
     if isinstance(result, int) or not result:
-        return [{"Error": "No data available"}]
+        return [{"Error": "No results found"}]
 
     formatted = []
     for row in result:
@@ -284,7 +284,7 @@ def format_most_penalized(result: list[dict[str, Any]] | int) -> list[dict[str, 
     Returns list with formatted column names
     """
     if isinstance(result, int) or not result:
-        return [{"Error": "No data available"}]
+        return [{"Error": "No results found"}]
 
     # Remove underscores from column names
     return [{format_column_name(k): v for k, v in row.items()} for row in result]
@@ -297,7 +297,7 @@ def format_common_play_types(result: list[dict[str, Any]] | int) -> list[dict[st
     Returns list with formatted column names
     """
     if isinstance(result, int) or not result:
-        return [{"Error": "No data available"}]
+        return [{"Error": "No results found"}]
 
     # Remove underscores from column names
     return [{format_column_name(k): v for k, v in row.items()} for row in result]
@@ -310,7 +310,7 @@ def format_top_shooting_teams(result: list[dict[str, Any]] | int) -> list[dict[s
     Returns list with formatted column names
     """
     if isinstance(result, int) or not result:
-        return [{"Error": "No data available"}]
+        return [{"Error": "No results found"}]
 
     # Remove underscores from column names
     return [{format_column_name(k): v for k, v in row.items()} for row in result]
@@ -323,7 +323,7 @@ def format_longest_games(result: list[dict[str, Any]] | int) -> list[dict[str, A
     Formats game_id and removes underscores from column names
     """
     if isinstance(result, int) or not result:
-        return [{"Error": "No data available"}]
+        return [{"Error": "No results found"}]
 
     formatted_result = []
 
@@ -347,7 +347,7 @@ def format_longest_avg_shift(result: list[dict[str, Any]] | int) -> list[dict[st
     Converts duration fields from seconds to readable time format and removes underscores.
     """
     if isinstance(result, int) or not result:
-        return [{"Error": "No data available"}]
+        return [{"Error": "No results found"}]
 
     formatted_result = []
 
@@ -377,7 +377,7 @@ def format_most_assists(result: list[dict[str, Any]] | int) -> list[dict[str, An
     Returns list with formatted column names
     """
     if isinstance(result, int) or not result:
-        return [{"Error": "No data available"}]
+        return [{"Error": "No results found"}]
 
     # Remove underscores from column names
     return [{format_column_name(k): v for k, v in row.items()} for row in result]
@@ -390,7 +390,7 @@ def format_top_scoring_players(result: list[dict[str, Any]] | int) -> list[dict[
     Returns list with formatted column names
     """
     if isinstance(result, int) or not result:
-        return [{"Error": "No data available"}]
+        return [{"Error": "No results found"}]
 
     # Remove underscores from column names
     return [{format_column_name(k): v for k, v in row.items()} for row in result]
@@ -403,7 +403,7 @@ def format_score_not_assist(result: list[dict[str, Any]] | int) -> list[dict[str
     Returns list with formatted column names
     """
     if isinstance(result, int) or not result:
-        return [{"Error": "No data available"}]
+        return [{"Error": "No results found"}]
 
     # Remove underscores from column names
     return [{format_column_name(k): v for k, v in row.items()} for row in result]

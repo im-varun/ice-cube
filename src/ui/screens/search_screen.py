@@ -209,7 +209,11 @@ class SearchScreen(Screen):
     }
 
     #where-group {
-        width: 59%;
+        width: 43%;
+    }
+
+    #limit-group {
+        width: 16%
     }
 
     #btn-group {
@@ -290,6 +294,11 @@ class SearchScreen(Screen):
                     yield Label("WHERE Clause (Optional):")
                     yield Input(placeholder="e.g. nationality = 'CAN'", id="where-input")
 
+                # LIMIT Clause
+                with Vertical(classes="input-group", id="limit-group"):
+                    yield Label("LIMIT Clause (Optional):")
+                    yield Input(placeholder="e.g. default 1234", id="limit-input")
+
                 # Search Button
                 with Vertical(classes="input-group", id="btn-group"):
                     yield Label("")  # Spacer
@@ -332,6 +341,7 @@ class SearchScreen(Screen):
         table_select = self.query_one("#table-select", Select)
         column_list = self.query_one("#column-select", SelectionList)
         where_input = self.query_one("#where-input", Input)
+        limit_input = self.query_one("#limit-input", Input)
         self.query_one("#results-table", DataTable)
 
         # Validation
@@ -345,6 +355,7 @@ class SearchScreen(Screen):
             return
 
         where_clause = where_input.value.strip()
+        limit_clause = limit_input.value.strip()
 
         # Send raw inputs to controller for safe query building
         request = UIRequest(
@@ -353,6 +364,7 @@ class SearchScreen(Screen):
                 "table": str(table_select.value),
                 "columns": list(selected_columns),
                 "where": where_clause if where_clause else None,
+                "limit": limit_clause if limit_clause else None,
             },
         )
         response = self.app.controller.handle_request(request)
@@ -386,4 +398,4 @@ class SearchScreen(Screen):
             rows.append(row_data)
 
         table.add_rows(rows)
-        self.notify(f"Loaded {len(rows)} rows.", severity="information")
+        self.notify(f"Loaded {len(rows)} distinct rows.", severity="information")
