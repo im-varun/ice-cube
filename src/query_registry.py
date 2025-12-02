@@ -31,85 +31,6 @@ class Query(Enum):
         payload_labels=["Player 1", "Player 2"],
     )
 
-    LONE_WOLFS = QueryInfo(
-        id="score_not_assist",
-        title="Lone Wolfs",
-        description="""
-        This query finds hockey players who score goals but have zero assists,
-        highlighting pure finishers.
-        It focuses on players who contribute only by shooting, not by playmaking.\n
-        Parameters
-        Minimum goals: try with 5 goals,
-        but you can raise or lower it depending on how strict you want the filter to be.\n
-        Example Use Case
-        With minimum of 5 goals, Jesper Boqvist shows up with 6 goals and 0 assists
-        a rare type of player who finishes plays but never sets them up.
-        This can help coaches identify players who may need to improve passing skills
-        or help teams looking for a one-dimensional shooter.
-        """,
-        needs_payload=True,
-        payload_labels=["minimum goals", "max results"],
-    )
-
-    TOP_SCORING_PLAYERS = QueryInfo(
-        id="top_scoring",
-        title="Top Scoring Players",
-        description="""
-        This query ranks players by their total offensive production (goals + assists).
-        It highlights players who contribute heavily to scoring while also staying disciplined.
-
-        Parameters
-        Penalty Threshold: The maximum number of penalties a player can have
-            eg- 30 means only players with fewer than 30 penalties are shown,
-            helping filter for disciplined players.
-        Minimum Goals: The minimum number of goals a player must score to qualify.
-            eg- 10 ensures the list focuses on players who are strong and consistent goal scorers.
-
-        Result Interpretation
-        The query found 349 disciplined goal scorers who produce a lot of offense
-        without taking too many penalties.
-        The top result is Leon Draisaitl, with 123 goals under the set penalty limit.
-        This helps identify clean offensive players, those who score often
-        but don't hurt the team by sitting in the penalty box.
-        It's useful for contract evaluations, fantasy leagues,
-        and coaches looking for productive yet disciplined players.
-        """,
-        needs_payload=True,
-        payload_labels=["penalty threshold", "minimum goals", "max results"],
-    )
-
-    MOST_PENALIZED_PLAYERS = QueryInfo(
-        id="penalized_teams",
-        title="Most Penalized Players",
-        description="Players with highest total penalty minutes per season",
-        needs_payload=False,
-        payload_labels=None,
-    )
-
-    LONGEST_GAMES = QueryInfo(
-        id="longest_games",
-        title="Longest Games",
-        description="Games ranked by total elapsed time including overtime",
-        needs_payload=False,
-        payload_labels=None,
-    )
-
-    MOST_ASSISTS = QueryInfo(
-        id="most_assists",
-        title="Players with Most Assists",
-        description="Players with highest assist totals across seasons",
-        needs_payload=False,
-        payload_labels=None,
-    )
-
-    PLAY_TYPES = QueryInfo(
-        id="play_types",
-        title="Most Common Play Types",
-        description="Frequency analysis of shot attempts by play type (tip-ins, wrist shots, etc.)",
-        needs_payload=False,
-        payload_labels=None,
-    )
-
     REVENGE_GAME_EFFECT = QueryInfo(
         id="revenge_game_effect",
         title="Revenge Game Effect",
@@ -159,18 +80,97 @@ class Query(Enum):
         payload_labels=None,
     )
 
-    TOP_SHOOTING_TEAMS = QueryInfo(
-        id="top_shooting_teams",
-        title="Top Shooting Teams",
-        description="Teams ranked by shooting percentage and shot volume",
-        needs_payload=False,
-        payload_labels=None,
+    LONE_WOLFS = QueryInfo(
+        id="score_not_assist",
+        title="Lone Wolfs",
+        description="""
+        This query finds hockey players who score goals but have zero assists,
+        highlighting pure finishers.
+        It focuses on players who contribute only by shooting, not by playmaking.\n
+        Parameters
+        Minimum goals: try with 5 goals,
+        but you can raise or lower it depending on how strict you want the filter to be.\n
+        Example Use Case
+        With minimum of 5 goals, Jesper Boqvist shows up with 6 goals and 0 assists
+        a rare type of player who finishes plays but never sets them up.
+        This can help coaches identify players who may need to improve passing skills
+        or help teams looking for a one-dimensional shooter.
+        """,
+        needs_payload=True,
+        payload_labels=["minimum goals", "max results"],
+    )
+
+    TOP_SCORING_PLAYERS = QueryInfo(
+        id="top_scoring",
+        title="Top Scoring Players",
+        description="""
+        This query ranks players by their total offensive production (goals + assists).
+        It highlights players who contribute heavily to scoring while also staying disciplined.
+
+        Parameters
+        Penalty Threshold: The maximum number of penalties a player can have
+            eg- 30 means only players with fewer than 30 penalties are shown,
+            helping filter for disciplined players.
+        Minimum Goals: The minimum number of goals a player must score to qualify.
+            eg- 10 ensures the list focuses on players who are strong and consistent goal scorers.
+
+        Result Interpretation
+        The query found 349 disciplined goal scorers who produce a lot of offense
+        without taking too many penalties.
+        The top result is Leon Draisaitl, with 123 goals under the set penalty limit.
+        This helps identify clean offensive players, those who score often
+        but don't hurt the team by sitting in the penalty box.
+        It's useful for contract evaluations, fantasy leagues,
+        and coaches looking for productive yet disciplined players.
+        """,
+        needs_payload=True,
+        payload_labels=["penalty threshold", "minimum goals", "max results"],
     )
 
     LONGEST_AVG_SHIFT = QueryInfo(
         id="longest_avg_shift",
         title="Longest Average Shifts",
         description="Players with longest average time-on-ice per shift",
+        needs_payload=False,
+        payload_labels=None,
+    )
+
+    MOST_PENALIZED_PLAYERS = QueryInfo(
+        id="penalized_teams",
+        title="Most Penalized Players",
+        description="Players with highest total penalty minutes per season",
+        needs_payload=False,
+        payload_labels=None,
+    )
+
+    LONGEST_GAMES = QueryInfo(
+        id="longest_games",
+        title="Longest Games",
+        description="Games ranked by total elapsed time including overtime",
+        needs_payload=False,
+        payload_labels=None,
+    )
+
+    MOST_ASSISTS = QueryInfo(
+        id="most_assists",
+        title="Players with Most Assists",
+        description="Players with highest assist totals across seasons",
+        needs_payload=False,
+        payload_labels=None,
+    )
+
+    PLAY_TYPES = QueryInfo(
+        id="play_types",
+        title="Most Common Play Types",
+        description="Frequency analysis of shot attempts by play type (tip-ins, wrist shots, etc.)",
+        needs_payload=False,
+        payload_labels=None,
+    )
+
+    TOP_SHOOTING_TEAMS = QueryInfo(
+        id="top_shooting_teams",
+        title="Top Shooting Teams",
+        description="Teams ranked by shooting percentage and shot volume",
         needs_payload=False,
         payload_labels=None,
     )

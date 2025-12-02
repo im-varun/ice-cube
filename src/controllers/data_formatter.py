@@ -192,7 +192,10 @@ def format_head_to_head(result: list[dict[str, Any]] | int) -> list[dict[str, An
         List of dictionaries where each row is a stat with player values
     """
     if isinstance(result, int) or not result:
-        return [{"No Result Found": "Please Retry"}]
+        return [
+            {"No Result Found": "Please Recheck Player Spellings"},
+            {"No Result Found": "Make Sure You Are Only Comparing 2 Skaters"},
+        ]
 
     formatted_result = []
     data = result[0]

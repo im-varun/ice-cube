@@ -467,7 +467,8 @@ class QueryEngine:
             FROM game_skater_stats
             JOIN player_info ON game_skater_stats.player_id = player_info.player_id
             JOIN game ON game_skater_stats.game_id = game.game_id
-            GROUP BY game_skater_stats.player_id, player_info.firstName, player_info.lastName, game.season
+            GROUP BY game_skater_stats.player_id,
+                     player_info.firstName, player_info.lastName, game.season
             ORDER BY total_assists DESC;
             """
             self._cursor.execute(query)
