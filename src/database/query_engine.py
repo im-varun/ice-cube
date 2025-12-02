@@ -459,13 +459,16 @@ class QueryEngine:
         try:
             query = """
             SELECT TOP 10
-                player_id,
-                season,
-                SUM(assists) AS total_assists
+                game_skater_stats.player_id,
+                player_info.firstName,
+                player_info.lastName,
+                game.season,
+                SUM(game_skater_stats.assists) AS total_assists
             FROM game_skater_stats
             JOIN player_info ON game_skater_stats.player_id = player_info.player_id
             JOIN game ON game_skater_stats.game_id = game.game_id
-            GROUP BY player_id, season
+            GROUP BY game_skater_stats.player_id,
+                     player_info.firstName, player_info.lastName, game.season
             ORDER BY total_assists DESC;
             """
             self._cursor.execute(query)

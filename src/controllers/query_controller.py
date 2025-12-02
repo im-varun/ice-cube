@@ -97,7 +97,7 @@ class QueryController(ControllerInterface):
         # Build query safely (inputs already validated by firewall)
         # Using DISTINCT and proper formatting
         cols_str = ", ".join(columns)
-        query = f"SELECT DISTINCT {cols_str} FROM {table}"
+        query = f"SELECT DISTINCT TOP 3295 {cols_str} FROM {table}"
 
         if where_clause:
             query += f" WHERE {where_clause}"
