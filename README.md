@@ -8,7 +8,7 @@ No bloated dashboards. No super slow queries. Just clean data, fast results.
 
 ---
 
-## 🖼️ What It Looks Like
+## What It Looks Like
 
 ![Home page with database repopulation](assets/main%20home%20page%20with%20database%20repopulation.png)
 
@@ -20,7 +20,7 @@ No bloated dashboards. No super slow queries. Just clean data, fast results.
 
 ---
 
-## ⚡ Why IceCube?
+## Why IceCube?
 
 | Problem | How IceCube Solves It |
 |---------|----------------------|
@@ -32,7 +32,7 @@ No bloated dashboards. No super slow queries. Just clean data, fast results.
 
 ---
 
-## 🔒 Security That Actually Works
+## Security That Actually Works
 
 All user input goes through a **PayloadFirewall** before any query runs:
 
@@ -48,7 +48,7 @@ When someone tries something shady, IceCube catches it and shows a friendly "nic
 
 ---
 
-## 🧹 Data Pipeline
+## Data Pipeline
 
 The raw data from Kaggle isn't ready to use out of the box. IceCube includes scripts that:
 
@@ -59,7 +59,7 @@ Both scripts are in the `scripts/` folder and run with a single command each.
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 ice-cube/
@@ -124,123 +124,7 @@ ice-cube/
             └── mock_controller.py
 ```
 
----
-
-## 🚀 Running It Locally
-
-### What You Need
-- Python 3.8+
-- Access to a MySQL Server (or MSSQL)
-- The NHL dataset from Kaggle
-
-### Step-by-Step Setup
-
-**1. Clone and install**
-```bash
-git clone https://github.com/yourusername/ice-cube.git
-cd ice-cube
-pip install -r requirements.txt
-```
-
-**2. Get the data**
-
-Download the NHL dataset from Kaggle and extract the CSV files into `data/raw/`.
-
-**3. Clean the data**
-```bash
-python scripts/data_cleaning.py
-```
-This reads from `data/raw/` and outputs cleaned files to `data/clean/`.
-
-**4. Generate SQL inserts**
-```bash
-python scripts/csv_to_sql.py
-```
-This creates `sql/populate.sql` with all the INSERT statements.
-
-**5. Set up your environment**
-
-Create a `.env` file in the project root:
-```env
-DB_SERVER=your_server_address
-DB_NAME=your_database_name
-DB_USER=your_username
-DB_PASSWORD=your_password
-DB_REPOPULATION_TIME=60
-```
-
-**6. Run the app**
-```bash
-python src/main.py
-```
-
-**7. Populate the database**
-
-Once the app starts, press `r` (Restart) to drop and repopulate all tables. The app reads `sql/schema.sql` and `sql/populate.sql` to set everything up.
-
-![Home page with database repopulation](assets/main%20home%20page%20with%20database%20repopulation.png)
-
----
-
-## 🎯 Features & Queries
-
-### Built-In Analytics
-
-| Query | What It Does |
-|-------|-------------|
-| **Head-to-Head Duel** | Compare two players side by side |
-| **Revenge Game Effect** | How players perform against old teams |
-| **Home Rink Advantage** | Stats on home vs away performance |
-| **Birthday Curse** | Do players choke on their birthday? |
-| **Most Common Play Types** | What events happen most in games |
-| **Top Shooting Teams** | Teams with the most shots |
-| **Players with Most Assists** | Top playmakers |
-| **Longest Games** | Epic overtime battles |
-
-### Custom Search
-
-Build your own queries with:
-- Table selection dropdown
-- Dynamic column picker
-- WHERE clause input (protected by the firewall)
-- Results displayed in a scrollable table
-
----
-
-## 🧱 Architecture
-
-IceCube uses a clean three-layer architecture:
-
-| Layer | Responsibility | Key Files |
-|-------|---------------|-----------|
-| **UI** | Renders screens, handles keyboard input | `screens/`, `widgets/`, `styles/` |
-| **Controllers** | Business logic, validation, formatting | `query_controller.py`, `payload_firewall.py` |
-| **Database** | SQL execution, connection management | `query_engine.py` |
-
-The UI never talks directly to the database. Everything flows through controllers.
-
----
-
-## 🔧 Code Quality
-
-Every commit goes through:
-
-- **Ruff** — fast Python linter and formatter
-- **Pre-commit hooks** — catches trailing whitespace, large files, YAML issues
-- **GitHub Actions** — runs linting on every push
-
-This keeps the codebase consistent across all contributors.
-
----
-
-## 📐 ER Diagram
-*Pls don't judge, its on paper rather than mermaid, but it covers the true essence of the dataset we used*
-
-![ER Diagram](assets/er%20diagram.png)
-
----
-
-## 🔀 Data Flow Diagram
+## Data Flow Diagram
 
 ```mermaid
 flowchart TB
@@ -334,7 +218,121 @@ flowchart TB
 
 ---
 
-## 👥 Team
+## Running It Locally
+
+### What You Need
+- Python 3.8+
+- Access to a MySQL Server (or MSSQL)
+- The NHL dataset from Kaggle
+
+### Step-by-Step Setup
+
+**1. Clone and install**
+```bash
+git clone https://github.com/yourusername/ice-cube.git
+cd ice-cube
+pip install -r requirements.txt
+```
+
+**2. Get the data**
+
+Download the NHL dataset from Kaggle and extract the CSV files into `data/raw/`.
+
+**3. Clean the data**
+```bash
+python scripts/data_cleaning.py
+```
+This reads from `data/raw/` and outputs cleaned files to `data/clean/`.
+
+**4. Generate SQL inserts**
+```bash
+python scripts/csv_to_sql.py
+```
+This creates `sql/populate.sql` with all the INSERT statements.
+
+**5. Set up your environment**
+
+Create a `.env` file in the project root:
+```env
+DB_SERVER=your_server_address
+DB_NAME=your_database_name
+DB_USER=your_username
+DB_PASSWORD=your_password
+DB_REPOPULATION_TIME=60
+```
+
+**6. Run the app**
+```bash
+python src/main.py
+```
+
+**7. Populate the database**
+
+Once the app starts, press `r` (Restart) to drop and repopulate all tables. The app reads `sql/schema.sql` and `sql/populate.sql` to set everything up.
+
+![Home page with database repopulation](assets/main%20home%20page%20with%20database%20repopulation.png)
+
+---
+
+## Features & Queries
+
+### Built-In Analytics
+
+| Query | What It Does |
+|-------|-------------|
+| **Head-to-Head Duel** | Compare two players side by side |
+| **Revenge Game Effect** | How players perform against old teams |
+| **Home Rink Advantage** | Stats on home vs away performance |
+| **Birthday Curse** | Do players choke on their birthday? |
+| **Most Common Play Types** | What events happen most in games |
+| **Top Shooting Teams** | Teams with the most shots |
+| **Players with Most Assists** | Top playmakers |
+| **Longest Games** | Epic overtime battles |
+
+### Custom Search
+
+Build your own queries with:
+- Table selection dropdown
+- Dynamic column picker
+- WHERE clause input (protected by the firewall)
+- Results displayed in a scrollable table
+
+---
+
+## Architecture
+
+IceCube uses a clean three-layer architecture:
+
+| Layer | Responsibility | Key Files |
+|-------|---------------|-----------|
+| **UI** | Renders screens, handles keyboard input | `screens/`, `widgets/`, `styles/` |
+| **Controllers** | Business logic, validation, formatting | `query_controller.py`, `payload_firewall.py` |
+| **Database** | SQL execution, connection management | `query_engine.py` |
+
+The UI never talks directly to the database. Everything flows through controllers.
+
+---
+
+## Code Quality
+
+Every commit goes through:
+
+- **Ruff** — fast Python linter and formatter
+- **Pre-commit hooks** — catches trailing whitespace, large files, YAML issues
+- **GitHub Actions** — runs linting on every push
+
+This keeps the codebase consistent across all contributors.
+
+---
+
+## ER Diagram
+*Pls don't judge, its on paper rather than mermaid, but it covers the true essence of the dataset we used*
+
+![ER Diagram](assets/er%20diagram.png)
+
+---
+
+## Team
 
 - Krisha Bhalala
 - Varun Mulchandani
@@ -342,7 +340,7 @@ flowchart TB
 
 ---
 
-## 📜 License
+## License
 
 MIT License — but please don't copy our code without understanding it first and learning from it + give some credits to us if you use our code.
 
