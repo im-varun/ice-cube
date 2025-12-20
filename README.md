@@ -1,6 +1,6 @@
-# ❄️ IceCube
+# ❄️ IceCube: NHL Analytics Engine
 
-**Hockey analytics without the headache.**
+**A crystalline database management system for high-performance hockey analytics.**
 
 IceCube is a terminal-based DBMS that makes digging through NHL stats *actually fun*. Built for the 2019-2020 season, it connects to a MySQL database and gives you a slick TUI (Text User Interface) with close to zero latency issues and proper data protection.
 
