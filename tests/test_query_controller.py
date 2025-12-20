@@ -4,13 +4,12 @@ Tests for QueryController - business logic layer.
 
 import sys
 from pathlib import Path
-from unittest.mock import MagicMock
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from controllers.query_controller import QueryController
-from ui.interfaces import UIRequest, UIResponse
+from ui.interfaces import UIRequest
 
 
 class MockQueryEngine:

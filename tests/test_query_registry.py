@@ -45,7 +45,7 @@ class TestQueryInfo:
         info = Query.HEAD_TO_HEAD.value
         try:
             info.id = "changed"
-            assert False, "Should have raised error"
+            raise AssertionError("Should have raised error")
         except Exception:
             pass  # Expected
 
@@ -93,7 +93,7 @@ class TestQueryFromId:
         """Invalid ID should raise ValueError."""
         try:
             Query.from_id("not_a_real_query")
-            assert False, "Should have raised ValueError"
+            raise AssertionError("Should have raised ValueError")
         except ValueError as e:
             assert "Unknown query ID" in str(e)
 
@@ -111,7 +111,7 @@ class TestQueryGetInfo:
         """Invalid ID should raise ValueError."""
         try:
             Query.get_info("fake_query")
-            assert False, "Should have raised ValueError"
+            raise AssertionError("Should have raised ValueError")
         except ValueError:
             pass
 
