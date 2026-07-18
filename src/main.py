@@ -19,7 +19,7 @@ from ui.screens import AnalyticsScreen, HomeScreen, SearchScreen
 
 class IceCubeApp(App):
     """
-    ❄️ IceCube - Hockey Analytics Terminal UI
+    ❄️ Ice Cube
 
     Modular architecture for team collaboration:
     - Controllers handle business logic

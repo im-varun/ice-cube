@@ -23,7 +23,7 @@ from ui.interfaces import UIRequest
 
 
 class HomeScreen(Screen):
-    """Professional IceCube Home Screen with Working Navigation"""
+    """Professional Ice Cube Home Screen with Working Navigation"""
 
     CSS = """
     HomeScreen {

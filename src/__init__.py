@@ -1,5 +1,5 @@
 """
-IceCube - NHL Database Management System
+Ice Cube - NHL Database Management System
 =========================================
 
 Main application package containing all core modules.
@@ -12,4 +12,4 @@ Structure:
 """
 
 __version__ = "1.0.0"
-__author__ = "IceCube Team"
+__author__ = "Ice Cube Team"

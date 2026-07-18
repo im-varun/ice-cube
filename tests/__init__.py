@@ -1,1 +1,1 @@
-# IceCube Test Suite
+# Ice Cube Test Suite

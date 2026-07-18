@@ -1,10 +1,6 @@
-# ❄️ IceCube: NHL Analytics Engine
+# Ice Cube (NHL Data Analytics Dashboard)
 
-**A crystalline database management system for high-performance hockey analytics.**
-
-IceCube is a terminal-based DBMS that makes digging through NHL stats *actually fun*. Built for the 2019-2020 season, it connects to a MySQL database and gives you a slick TUI (Text User Interface) with close to zero latency issues and proper data protection.
-
-No bloated dashboards. No super slow queries. Just clean data, fast results.
+Ice Cube is a NHL data analytics dashboard that makes digging through NHL statistics *actually fun*. Built for the 2019-2020 season, it connects to a Microsoft SQL Server database and gives you a slick TUI (Text User Interface) with close to zero latency issues and proper data protection.
 
 ---
 
@@ -20,9 +16,9 @@ No bloated dashboards. No super slow queries. Just clean data, fast results.
 
 ---
 
-## Why IceCube?
+## Why Ice Cube?
 
-| Problem | How IceCube Solves It |
+| Problem | How Ice Cube Solves It |
 |---------|----------------------|
 | **Slow queries** | TUI built with Textual — responds instantly, no browser overhead |
 | **SQL injection attacks** | PayloadFirewall validates every input before it touches the DB |
@@ -44,13 +40,13 @@ All user input goes through a **PayloadFirewall** before any query runs:
 
 ![SQL injection successfully detected](assets/sql_injection_successfully%20detected.png)
 
-When someone tries something shady, IceCube catches it and shows a friendly "nice try" message.
+When someone tries something shady, Ice Cube catches it and shows a friendly "nice try" message.
 
 ---
 
 ## Data Pipeline
 
-The raw data from Kaggle isn't ready to use out of the box. IceCube includes scripts that:
+The raw data from Kaggle isn't ready to use out of the box. Ice Cube includes scripts that:
 
 1. **Clean the data** — removes unwanted columns, fixes date formats, handles nulls, drops duplicate rows, and filters to the 2019-2020 season only
 2. **Convert to SQL** — takes the cleaned CSVs and generates `INSERT` statements for your database
@@ -140,12 +136,12 @@ flowchart TB
         PopulateSQL["sql/populate.sql"]
     end
 
-    subgraph Database["MySQL Database"]
+    subgraph Database["Microsoft SQL Server"]
         Schema["sql/schema.sql"]
         Tables["13 Database Tables"]
     end
 
-    subgraph Application["IceCube Application"]
+    subgraph Application["Ice Cube Application"]
         subgraph UI["UI Layer"]
             Main["src/main.py"]
             HomeScreen["home_screen.py"]
@@ -222,13 +218,14 @@ flowchart TB
 
 ### What You Need
 - Python 3.8+
-- Access to a MySQL Server (or MSSQL)
+- Access to a Microsoft SQL Server
 - The NHL dataset from Kaggle
 
 ### Step-by-Step Setup
 
 **1. Clone and install**
 ```bash
+# after forking the repo, clone it to your local machine
 git clone https://github.com/yourusername/ice-cube.git
 cd ice-cube
 pip install -r requirements.txt
@@ -301,7 +298,7 @@ Build your own queries with:
 
 ## Architecture
 
-IceCube uses a clean three-layer architecture:
+Ice Cube uses a clean three-layer architecture:
 
 | Layer | Responsibility | Key Files |
 |-------|---------------|-----------|
@@ -326,7 +323,6 @@ This keeps the codebase consistent across all contributors.
 ---
 
 ## ER Diagram
-*Pls don't judge, its on paper rather than mermaid, but it covers the true essence of the dataset we used*
 
 ![ER Diagram](assets/er%20diagram.png)
 
@@ -334,15 +330,15 @@ This keeps the codebase consistent across all contributors.
 
 ## Team
 
+- Krish Bhalala
 - Krisha Bhalala
 - Varun Mulchandani
-- Krish Bhalala
 
 ---
 
 ## License
 
-MIT License — but please don't copy our code without understanding it first and learning from it + give some credits to us if you use our code.
+MIT License
 
 ---
 
